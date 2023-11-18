@@ -13,7 +13,7 @@ enable-instant-pickup: true
 
 # only works if enable-instant-pickup is true
 # this makes it that only the owner of the death chest will be able to instant pickup it
-instant-pickup-only-own: true
+instant-pickup-only-own: false
 
 # do not edit
 version: 1
