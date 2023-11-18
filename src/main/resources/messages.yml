@@ -1,0 +1,20 @@
+hologram:
+  - "&#FF0000☠ &l%player% &#FF0000☠"
+  - ""
+  - "&#00EEFF%xp% &fXP &7| &#00EEFF%item% &fitem"
+  - "&f⌛ &#FFEE00%despawn-time% &f⌛"
+
+help:
+  - " "
+  - "<gradient:#EEEEEE:#DDDDDD><b>AxDeathChest</b></gradient> <gray>» "
+  - " &7- &f/axdeathchest reload &7| &#DDDDDDReload plugin"
+  - " "
+
+gui-name: "&0%player%'s Death Chest"
+
+reload:
+  success: "&#33FF33Plugin successfully reloaded!"
+  failed: "&#FF3333Failed to reload the plugin! Something is wrong in the &f%file%&#FF3333 file, look in the console or use a yaml validator to fix the errors!"
+
+# do not edit
+version: 1

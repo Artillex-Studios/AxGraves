@@ -1,0 +1,4 @@
+name: AxDeathChest
+version: '${project.version}'
+main: com.artillexstudios.axdeathchest.AxDeathChest
+api-version: '1.18'

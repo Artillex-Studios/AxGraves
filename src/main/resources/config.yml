@@ -1,0 +1,19 @@
+prefix: "<gradient:#EEEEEE:#DDDDDD><b>AxDeathChest</b></gradient> <gray>» "
+
+# how fast should death chests disappear
+# in seconds
+despawn-time-seconds: 180
+
+# should death chests drop all items on the ground when they expire?
+# if false: items will be removed
+drop-items: true
+
+# should players have the ability to take all items from a death chest by shift right clicking?
+enable-instant-pickup: true
+
+# only works if enable-instant-pickup is true
+# this makes it that only the owner of the death chest will be able to instant pickup it
+instant-pickup-only-own: true
+
+# do not edit
+version: 1
