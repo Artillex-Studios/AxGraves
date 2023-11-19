@@ -23,7 +23,8 @@ override-keep-inventory: true
 hologram-height: 0.75
 
 # how high should the player head be?
-# in some versions on some client
+# in some versions on some clients may see the heads glitched in the ground
+# use this option OR viaversion's hologram-y setting to correct it
 # only applies to new graves
 head-height: -1.2
 
