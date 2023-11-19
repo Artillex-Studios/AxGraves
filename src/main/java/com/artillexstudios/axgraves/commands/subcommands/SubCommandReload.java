@@ -1,16 +1,16 @@
-package com.artillexstudios.axdeathchest.commands.subcommands;
+package com.artillexstudios.axgraves.commands.subcommands;
 
-import com.artillexstudios.axdeathchest.chests.DeathChest;
-import com.artillexstudios.axdeathchest.chests.SpawnedChests;
+import com.artillexstudios.axgraves.grave.Grave;
+import com.artillexstudios.axgraves.grave.SpawnedGrave;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import static com.artillexstudios.axdeathchest.AxDeathChest.CONFIG;
-import static com.artillexstudios.axdeathchest.AxDeathChest.EXECUTOR;
-import static com.artillexstudios.axdeathchest.AxDeathChest.MESSAGES;
-import static com.artillexstudios.axdeathchest.AxDeathChest.MESSAGEUTILS;
+import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+import static com.artillexstudios.axgraves.AxGraves.EXECUTOR;
+import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
 public class SubCommandReload {
 
@@ -30,7 +30,7 @@ public class SubCommandReload {
 
 
         EXECUTOR.execute(() -> {
-            for (DeathChest deathChest : SpawnedChests.getChests()) {
+            for (Grave deathChest : SpawnedGrave.getGraves()) {
                 deathChest.reload();
                 deathChest.update();
             }

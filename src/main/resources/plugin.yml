@@ -1,4 +1,4 @@
-name: AxDeathChest
+name: AxGraves
 version: '${project.version}'
-main: com.artillexstudios.axdeathchest.AxDeathChest
+main: com.artillexstudios.axgraves.AxGraves
 api-version: '1.18'

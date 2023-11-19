@@ -1,4 +1,4 @@
-package com.artillexstudios.axdeathchest.chests;
+package com.artillexstudios.axgraves.grave;
 
 import com.artillexstudios.axapi.entity.PacketEntityFactory;
 import com.artillexstudios.axapi.entity.impl.PacketArmorStand;
@@ -7,11 +7,12 @@ import com.artillexstudios.axapi.hologram.HologramFactory;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
+import com.artillexstudios.axapi.utils.RotationType;
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axdeathchest.api.events.DeathChestInteractEvent;
-import com.artillexstudios.axdeathchest.api.events.DeathChestOpenEvent;
-import com.artillexstudios.axdeathchest.utils.LocationUtils;
-import com.artillexstudios.axdeathchest.utils.Utils;
+import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
+import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
+import com.artillexstudios.axgraves.utils.LocationUtils;
+import com.artillexstudios.axgraves.utils.Utils;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.Bukkit;
@@ -23,17 +24,18 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.EulerAngle;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.artillexstudios.axdeathchest.AxDeathChest.CONFIG;
-import static com.artillexstudios.axdeathchest.AxDeathChest.EXECUTOR;
-import static com.artillexstudios.axdeathchest.AxDeathChest.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+import static com.artillexstudios.axgraves.AxGraves.EXECUTOR;
+import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 
-public class DeathChest {
+public class Grave {
     private final long spawned;
     private final Location location;
     private final OfflinePlayer player;
@@ -43,7 +45,7 @@ public class DeathChest {
     private final PacketArmorStand entity;
     private Hologram hologram;
 
-    public DeathChest(Location loc, Player player, Inventory inventory, int storedXP) {
+    public Grave(Location loc, Player player, Inventory inventory, int storedXP) {
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
@@ -67,7 +69,7 @@ public class DeathChest {
 
         entity.onClick(event -> Scheduler.get().run(scheduledTask -> {
 
-            final DeathChestInteractEvent deathChestInteractEvent = new DeathChestInteractEvent(player, this);
+            final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
             Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
             if (deathChestInteractEvent.isCancelled()) return;
 
@@ -96,7 +98,7 @@ public class DeathChest {
                 return;
             }
 
-            final DeathChestOpenEvent deathChestOpenEvent = new DeathChestOpenEvent(player, this);
+            final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(player, this);
             Bukkit.getPluginManager().callEvent(deathChestOpenEvent);
             if (deathChestOpenEvent.isCancelled()) return;
 
@@ -104,7 +106,7 @@ public class DeathChest {
         }));
 
         EXECUTOR.execute(() -> {
-            hologram = HologramFactory.get().spawnHologram(location.add(0, 1.2, 0), Serializers.LOCATION.serialize(location), 0.3);
+            hologram = HologramFactory.get().spawnHologram(location.add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
             for (String msg : MESSAGES.getStringList("hologram")) {
                 msg = msg.replace("%player%", playerName);
@@ -114,6 +116,11 @@ public class DeathChest {
                 hologram.addLine(StringUtils.format(msg));
             }
         });
+    }
+
+    private EulerAngle getEuler(Location dir) {
+        double yaw = -Math.atan2(dir.getX(), dir.getZ()) + Math.PI / 4;
+        return new EulerAngle(0, yaw, 0);
     }
 
     public void update() {
@@ -157,7 +164,7 @@ public class DeathChest {
     }
 
     public void remove() {
-        SpawnedChests.removeDeathChest(DeathChest.this);
+        SpawnedGrave.removeGrave(Grave.this);
 
         Scheduler.get().runAt(location, scheduledTask -> {
             removeInventory();

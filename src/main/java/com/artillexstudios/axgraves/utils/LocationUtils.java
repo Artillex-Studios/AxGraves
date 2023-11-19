@@ -1,4 +1,4 @@
-package com.artillexstudios.axdeathchest.utils;
+package com.artillexstudios.axgraves.utils;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;

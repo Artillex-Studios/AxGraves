@@ -1,13 +1,12 @@
 hologram:
-  - "&#FF0000☠ &l%player% &#FF0000☠"
-  - ""
-  - "&#00EEFF%xp% &fXP &7| &#00EEFF%item% &fitem"
-  - "&f⌛ &#FFEE00%despawn-time% &f⌛"
+  - "&#FF0000☠ &#FF0000&l%player% &#FF0000☠"
+  - "&#00CC00⌛ &#00FF00%despawn-time% &#00CC00⌛"
+  - "&#00AAFF%item% &fɪᴛᴇᴍ &8| &#00AAFF%xp% &fxᴘ"
 
 help:
   - " "
-  - "<gradient:#EEEEEE:#DDDDDD><b>AxDeathChest</b></gradient> <gray>» "
-  - " &7- &f/axdeathchest reload &7| &#DDDDDDReload plugin"
+  - "&#FF00FF&lAxGraves &7» "
+  - " &7- &f/axgraves reload &7| &#FF00FFReload plugin"
   - " "
 
 gui-name: "&0%player%'s Death Chest"

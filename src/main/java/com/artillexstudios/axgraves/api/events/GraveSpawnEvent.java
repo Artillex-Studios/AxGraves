@@ -1,23 +1,22 @@
-package com.artillexstudios.axdeathchest.api.events;
+package com.artillexstudios.axgraves.api.events;
 
-import com.artillexstudios.axdeathchest.chests.DeathChest;
+import com.artillexstudios.axgraves.grave.Grave;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class DeathChestSpawnEvent extends Event {
+public class GraveSpawnEvent extends Event {
     private static final HandlerList handlerList = new HandlerList();
     private final Player player;
-    private final DeathChest deathChest;
+    private final Grave grave;
 
-    public DeathChestSpawnEvent(@NotNull Player player, @NotNull DeathChest deathChest) {
+    public GraveSpawnEvent(@NotNull Player player, @NotNull Grave grave) {
         super(!Bukkit.isPrimaryThread());
 
         this.player = player;
-        this.deathChest = deathChest;
+        this.grave = grave;
     }
 
     @NotNull
@@ -36,7 +35,7 @@ public class DeathChestSpawnEvent extends Event {
     }
 
     @NotNull
-    public DeathChest getDeathChest() {
-        return deathChest;
+    public Grave getGrave() {
+        return grave;
     }
 }

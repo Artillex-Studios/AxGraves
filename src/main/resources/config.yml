@@ -1,4 +1,4 @@
-prefix: "<gradient:#EEEEEE:#DDDDDD><b>AxDeathChest</b></gradient> <gray>» "
+prefix: "&#FF00FF&lAxGraves &7» "
 
 # how fast should death chests disappear
 # in seconds
@@ -14,6 +14,17 @@ enable-instant-pickup: true
 # only works if enable-instant-pickup is true
 # this makes it that only the owner of the death chest will be able to instant pickup it
 instant-pickup-only-own: false
+
+# i would only recommend disabling this if you have a permission based keepinventory system
+override-keep-inventory: true
+
+# how high should death chest holograms spawn?
+hologram-height: 0.75
+
+# worlds where death chests won't spawn
+# this is case-sensitive
+disabled-worlds:
+  - "blacklisted_world"
 
 # do not edit
 version: 1

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.artillexstudios</groupId>
-    <artifactId>AxDeathChest</artifactId>
+    <artifactId>AxGraves</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>AxDeathChest</name>
+    <name>AxGraves</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -42,11 +42,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>com.artillexstudios.axdeathchest.libs.bstats</shadedPattern>
+                                    <shadedPattern>com.artillexstudios.axgraves.libs.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>dev.triumphteam.gui</pattern>
-                                    <shadedPattern>com.artillexstudios.axdeathchest.libs.gui</shadedPattern>
+                                    <shadedPattern>com.artillexstudios.axgraves.libs.gui</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

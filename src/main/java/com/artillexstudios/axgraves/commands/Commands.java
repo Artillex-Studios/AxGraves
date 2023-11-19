@@ -1,17 +1,17 @@
-package com.artillexstudios.axdeathchest.commands;
+package com.artillexstudios.axgraves.commands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axdeathchest.commands.subcommands.SubCommandReload;
+import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import static com.artillexstudios.axdeathchest.AxDeathChest.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 
-@Command({"axdeathchest", "deathchest", "axdc", "dchest", "axdchest"})
-@CommandPermission("axdeathchest.admin")
+@Command({"axgraves", "axgrave", "grave", "graves"})
+@CommandPermission("axgraves.admin")
 public class Commands {
 
     @Subcommand("help")

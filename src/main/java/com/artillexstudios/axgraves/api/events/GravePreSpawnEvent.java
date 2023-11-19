@@ -1,6 +1,6 @@
-package com.artillexstudios.axdeathchest.api.events;
+package com.artillexstudios.axgraves.api.events;
 
-import com.artillexstudios.axdeathchest.chests.DeathChest;
+import com.artillexstudios.axgraves.grave.Grave;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -8,17 +8,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class DeathChestOpenEvent extends Event implements Cancellable {
+public class GravePreSpawnEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
-    private final Player opener;
-    private final DeathChest deathChest;
+    private final Player player;
+    private final Grave grave;
     private boolean isCancelled = false;
 
-    public DeathChestOpenEvent(@NotNull Player opener, @NotNull DeathChest deathChest) {
+    public GravePreSpawnEvent(@NotNull Player player, @NotNull Grave grave) {
         super(!Bukkit.isPrimaryThread());
 
-        this.opener = opener;
-        this.deathChest = deathChest;
+        this.player = player;
+        this.grave = grave;
     }
 
     @NotNull
@@ -32,13 +32,13 @@ public class DeathChestOpenEvent extends Event implements Cancellable {
     }
 
     @NotNull
-    public Player getOpener() {
-        return opener;
+    public Player getPlayer() {
+        return player;
     }
 
     @NotNull
-    public DeathChest getDeathChest() {
-        return deathChest;
+    public Grave getGrave() {
+        return grave;
     }
 
     @Override
