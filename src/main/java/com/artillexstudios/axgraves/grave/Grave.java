@@ -23,7 +23,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.EXECUTOR;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 
 public class Grave {
@@ -43,7 +41,7 @@ public class Grave {
     private final StorageGui gui;
     private int storedXP;
     private final PacketArmorStand entity;
-    private Hologram hologram;
+    private final Hologram hologram;
 
     public Grave(Location loc, @NotNull Player player, @NotNull Inventory inventory, int storedXP) {
         this.location = LocationUtils.getCenterOf(loc);
@@ -61,13 +59,13 @@ public class Grave {
             gui.addItem(it);
         }
 
-        entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(this.location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0), EntityType.ARMOR_STAND);
+        entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0), EntityType.ARMOR_STAND);
         entity.setItem(EquipmentSlot.HELMET, Utils.getPlayerHead(player));
         entity.setSmall(true);
         entity.setInvisible(true);
         entity.setHasBasePlate(false);
 
-        entity.onClick(event -> Scheduler.get().run(scheduledTask -> {
+        entity.onClick(event -> Scheduler.get().run(scheduledTask2 -> {
 
             final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
             Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
@@ -105,22 +103,15 @@ public class Grave {
             gui.open(event.getPlayer());
         }));
 
-        EXECUTOR.execute(() -> {
-            hologram = HologramFactory.get().spawnHologram(location.add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        hologram = HologramFactory.get().spawnHologram(location.add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
-            for (String msg : MESSAGES.getStringList("hologram")) {
-                msg = msg.replace("%player%", playerName);
-                msg = msg.replace("%xp%", "" + storedXP);
-                msg = msg.replace("%item%", "" + countItems());
-                msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
-                hologram.addLine(StringUtils.format(msg));
-            }
-        });
-    }
-
-    private EulerAngle getEuler(Location dir) {
-        double yaw = -Math.atan2(dir.getX(), dir.getZ()) + Math.PI / 4;
-        return new EulerAngle(0, yaw, 0);
+        for (String msg : MESSAGES.getStringList("hologram")) {
+            msg = msg.replace("%player%", playerName);
+            msg = msg.replace("%xp%", "" + storedXP);
+            msg = msg.replace("%item%", "" + countItems());
+            msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
+            hologram.addLine(StringUtils.format(msg));
+        }
     }
 
     public void update() {

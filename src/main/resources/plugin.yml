@@ -2,3 +2,4 @@ name: AxGraves
 version: '${project.version}'
 main: com.artillexstudios.axgraves.AxGraves
 api-version: '1.18'
+folia-supported: true
