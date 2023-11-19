@@ -7,7 +7,6 @@ import com.artillexstudios.axapi.hologram.HologramFactory;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
-import com.artillexstudios.axapi.utils.RotationType;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
