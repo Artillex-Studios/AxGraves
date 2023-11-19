@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +45,7 @@ public class Grave {
     private final PacketArmorStand entity;
     private Hologram hologram;
 
-    public Grave(Location loc, Player player, Inventory inventory, int storedXP) {
+    public Grave(Location loc, @NotNull Player player, @NotNull Inventory inventory, int storedXP) {
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
@@ -60,7 +61,7 @@ public class Grave {
             gui.addItem(it);
         }
 
-        entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(this.location.clone().add(0, -1.2, 0), EntityType.ARMOR_STAND);
+        entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(this.location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0), EntityType.ARMOR_STAND);
         entity.setItem(EquipmentSlot.HELMET, Utils.getPlayerHead(player));
         entity.setSmall(true);
         entity.setInvisible(true);

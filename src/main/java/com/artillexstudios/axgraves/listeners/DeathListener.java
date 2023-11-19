@@ -23,6 +23,8 @@ public class DeathListener implements Listener {
 
         final Player player = event.getEntity();
 
+        if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
+
         final Grave grave = new Grave(player.getLocation(), player, player.getInventory(), player.getTotalExperience());
 
         if (CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) {

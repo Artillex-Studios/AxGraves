@@ -19,7 +19,13 @@ instant-pickup-only-own: false
 override-keep-inventory: true
 
 # how high should death chest holograms spawn?
+# only applies to new graves
 hologram-height: 0.75
+
+# how high should the player head be?
+# in some versions on some client
+# only applies to new graves
+head-height: -1.2
 
 # worlds where death chests won't spawn
 # this is case-sensitive
