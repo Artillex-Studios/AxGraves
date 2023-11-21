@@ -33,5 +33,14 @@ head-height: -1.2
 disabled-worlds:
   - "blacklisted_world"
 
+# true: the head can face in all the 360 degrees
+# false: the head can face in only 4 directions (north, east, south, west)
+rotate-head-360: true
+
+# should the head rotate
+auto-rotation:
+  enabled: false
+  speed: 10.0
+
 # do not edit
-version: 1
+version: 2

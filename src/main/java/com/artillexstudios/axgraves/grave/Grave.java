@@ -65,6 +65,14 @@ public class Grave {
         entity.setInvisible(true);
         entity.setHasBasePlate(false);
 
+        if (CONFIG.getBoolean("rotate-head-360", true)) {
+            entity.getLocation().setYaw(player.getLocation().getYaw());
+            entity.teleport(entity.getLocation());
+        } else {
+            entity.getLocation().setYaw(LocationUtils.getNearestDirection(player.getLocation().getYaw()));
+            entity.teleport(entity.getLocation());
+        }
+
         entity.onClick(event -> Scheduler.get().run(scheduledTask2 -> {
 
             final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
@@ -115,6 +123,11 @@ public class Grave {
     }
 
     public void update() {
+
+        if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
+            entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
+            entity.teleport(entity.getLocation());
+        }
 
         int items = countItems();
 
