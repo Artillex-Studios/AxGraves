@@ -10,6 +10,7 @@ import com.artillexstudios.axapi.utils.EquipmentSlot;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
+import com.artillexstudios.axgraves.utils.BlacklistUtils;
 import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.Utils;
 import dev.triumphteam.gui.guis.Gui;
@@ -56,6 +57,8 @@ public class Grave {
 
         for (ItemStack it : inventory.getContents()) {
             if (it == null) continue;
+            if (BlacklistUtils.isBlacklisted(it)) continue;
+
             gui.addItem(it);
         }
 

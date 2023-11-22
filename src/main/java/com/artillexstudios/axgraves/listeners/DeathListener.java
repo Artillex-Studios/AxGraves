@@ -1,7 +1,5 @@
 package com.artillexstudios.axgraves.listeners;
 
-import com.artillexstudios.axapi.scheduler.ScheduledTask;
-import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axgraves.api.events.GravePreSpawnEvent;
 import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
@@ -13,8 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 

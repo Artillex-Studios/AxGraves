@@ -42,5 +42,12 @@ auto-rotation:
   enabled: false
   speed: 10.0
 
+# items that will be removed on death and will not show up in graves
+blacklisted-items:
+  "1":
+    material: "barrier"
+    name-contains: "Banned item's name"
+
+
 # do not edit
-version: 2
+version: 3
