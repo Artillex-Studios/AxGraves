@@ -27,9 +27,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
@@ -48,14 +50,17 @@ public class Grave {
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
+
+        final ItemStack[] items = Arrays.stream(inventory.getContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
                 .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
-                .rows(4)
+                .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
                 .create();
+
         this.storedXP = storedXP;
         this.spawned = System.currentTimeMillis();
 
-        for (ItemStack it : inventory.getContents()) {
+        for (ItemStack it : items) {
             if (it == null) continue;
             if (BlacklistUtils.isBlacklisted(it)) continue;
 

@@ -48,6 +48,5 @@ blacklisted-items:
     material: "barrier"
     name-contains: "Banned item's name"
 
-
 # do not edit
 version: 3
