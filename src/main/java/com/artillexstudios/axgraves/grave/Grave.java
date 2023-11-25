@@ -131,7 +131,6 @@ public class Grave {
     }
 
     public void update() {
-
         if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
             entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
             entity.teleport(entity.getLocation());
@@ -139,7 +138,8 @@ public class Grave {
 
         int items = countItems();
 
-        if (CONFIG.getInt("despawn-time-seconds", 180) * 1_000L <= (System.currentTimeMillis() - spawned) || items == 0) {
+        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
+        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || items == 0)) {
             remove();
             return;
         }
@@ -150,7 +150,7 @@ public class Grave {
             msg = msg.replace("%player%", playerName);
             msg = msg.replace("%xp%", "" + storedXP);
             msg = msg.replace("%item%", "" + items);
-            msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
+            msg = msg.replace("%despawn-time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
 
             if (i > hologram.getLines().size() - 1) {
                 hologram.addLine(StringUtils.format(msg));

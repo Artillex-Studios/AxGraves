@@ -1,6 +1,7 @@
 prefix: "&#FF00FF&lAxGraves &7» "
 
 # how fast should death chests disappear
+# set to -1 to make graves last until the next server restart
 # in seconds
 despawn-time-seconds: 180
 
@@ -49,4 +50,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 3
+version: 4
