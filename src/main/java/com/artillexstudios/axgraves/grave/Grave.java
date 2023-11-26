@@ -46,12 +46,12 @@ public class Grave {
     private final PacketArmorStand entity;
     private final Hologram hologram;
 
-    public Grave(Location loc, @NotNull Player player, @NotNull Inventory inventory, int storedXP) {
+    public Grave(Location loc, @NotNull Player player, @NotNull ItemStack[] itemsAr, int storedXP) {
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
 
-        final ItemStack[] items = Arrays.stream(inventory.getContents()).filter(Objects::nonNull).toArray(ItemStack[]::new);
+        final ItemStack[] items = Arrays.stream(itemsAr).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
                 .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
                 .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))

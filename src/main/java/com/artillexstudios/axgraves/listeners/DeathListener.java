@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
@@ -25,13 +26,18 @@ public class DeathListener implements Listener {
 
         if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
 
-        final Grave grave = new Grave(player.getLocation(), player, player.getInventory(), player.getTotalExperience());
+        Grave grave = null;
 
-        if (CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) {
+        if (!event.getKeepInventory()) {
+            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), player.getTotalExperience());
+        } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
             player.setLevel(0);
             player.setTotalExperience(0);
+            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), player.getTotalExperience());
             player.getInventory().clear();
         }
+
+        if (grave == null) return;
 
         final GravePreSpawnEvent gravePreSpawnEvent = new GravePreSpawnEvent(player, grave);
         Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);

@@ -45,9 +45,7 @@ public final class AxGraves extends AxPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
 
         final BukkitCommandHandler handler = BukkitCommandHandler.create(this);
-
         handler.register(new Commands());
-        handler.registerBrigadier();
 
         new TickGraves().start();
     }
