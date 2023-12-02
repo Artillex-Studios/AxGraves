@@ -22,7 +22,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +34,7 @@ import java.util.Objects;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
 public class Grave {
     private final long spawned;
@@ -81,9 +81,13 @@ public class Grave {
             entity.teleport(entity.getLocation());
         }
 
-        entity.onClick(event -> Scheduler.get().run(scheduledTask2 -> {
+        entity.onClick(event -> Scheduler.get().run(task -> {
+            if (CONFIG.getBoolean("interact-only-own", false) && !event.getPlayer().getUniqueId().equals(player.getUniqueId()) && !event.getPlayer().hasPermission("axgraves.admin")) {
+                MESSAGEUTILS.sendLang(event.getPlayer(), "interact.not-your-grave");
+                return;
+            }
 
-            final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
+            final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(event.getPlayer(), this);
             Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
             if (deathChestInteractEvent.isCancelled()) return;
 

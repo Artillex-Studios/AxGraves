@@ -43,6 +43,10 @@ auto-rotation:
   enabled: false
   speed: 10.0
 
+# true: only the person who died and people with axgraves.admin can open the grave
+# false: everyone can open the grave
+interact-only-own: false
+
 # items that will be removed on death and will not show up in graves
 blacklisted-items:
   "1":
@@ -50,4 +54,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 4
+version: 5

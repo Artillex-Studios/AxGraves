@@ -15,5 +15,8 @@ reload:
   success: "&#33FF33Plugin successfully reloaded!"
   failed: "&#FF3333Failed to reload the plugin! Something is wrong in the &f%file%&#FF3333 file, look in the console or use a yaml validator to fix the errors!"
 
+interact:
+  not-your-grave: "&#FF3333You can only open your own grave!"
+
 # do not edit
-version: 1
+version: 2
