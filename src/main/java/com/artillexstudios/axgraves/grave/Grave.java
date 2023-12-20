@@ -81,49 +81,9 @@ public class Grave {
             entity.teleport(entity.getLocation());
         }
 
-        entity.onClick(event -> Scheduler.get().run(task -> {
-            if (CONFIG.getBoolean("interact-only-own", false) && !event.getPlayer().getUniqueId().equals(player.getUniqueId()) && !event.getPlayer().hasPermission("axgraves.admin")) {
-                MESSAGEUTILS.sendLang(event.getPlayer(), "interact.not-your-grave");
-                return;
-            }
+        entity.onClick(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-            final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(event.getPlayer(), this);
-            Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
-            if (deathChestInteractEvent.isCancelled()) return;
-
-            if (this.storedXP != 0) {
-                event.getPlayer().giveExp(this.storedXP);
-                this.storedXP = 0;
-            }
-
-            if (event.getHand().equals(org.bukkit.inventory.EquipmentSlot.HAND) && event.getPlayer().isSneaking()) {
-                if (!CONFIG.getBoolean("enable-instant-pickup", true)) return;
-                if (CONFIG.getBoolean("instant-pickup-only-own", false) && !player.getUniqueId().equals(event.getPlayer().getUniqueId())) return;
-
-                for (ItemStack it : gui.getInventory().getContents()) {
-                    if (it == null) continue;
-
-                    final Collection<ItemStack> ar = event.getPlayer().getInventory().addItem(it).values();
-                    if (ar.isEmpty()) {
-                        it.setAmount(0);
-                        continue;
-                    }
-
-                    it.setAmount(ar.iterator().next().getAmount());
-                }
-
-                update();
-                return;
-            }
-
-            final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(player, this);
-            Bukkit.getPluginManager().callEvent(deathChestOpenEvent);
-            if (deathChestOpenEvent.isCancelled()) return;
-
-            gui.open(event.getPlayer());
-        }));
-
-        hologram = HologramFactory.get().spawnHologram(location.add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        hologram = HologramFactory.get().spawnHologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
         for (String msg : MESSAGES.getStringList("hologram")) {
             msg = msg.replace("%player%", playerName);
@@ -162,6 +122,48 @@ public class Grave {
                 hologram.setLine(i, StringUtils.format(msg));
             }
         }
+    }
+
+    public void interact(@NotNull Player player, org.bukkit.inventory.EquipmentSlot slot) {
+        if (CONFIG.getBoolean("interact-only-own", false) && !player.getUniqueId().equals(player.getUniqueId()) && !player.hasPermission("axgraves.admin")) {
+            MESSAGEUTILS.sendLang(player, "interact.not-your-grave");
+            return;
+        }
+
+        final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
+        Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
+        if (deathChestInteractEvent.isCancelled()) return;
+
+        if (this.storedXP != 0) {
+            player.giveExp(this.storedXP);
+            this.storedXP = 0;
+        }
+
+        if (slot.equals(org.bukkit.inventory.EquipmentSlot.HAND) && player.isSneaking()) {
+            if (!CONFIG.getBoolean("enable-instant-pickup", true)) return;
+            if (CONFIG.getBoolean("instant-pickup-only-own", false) && !player.getUniqueId().equals(player.getUniqueId())) return;
+
+            for (ItemStack it : gui.getInventory().getContents()) {
+                if (it == null) continue;
+
+                final Collection<ItemStack> ar = player.getInventory().addItem(it).values();
+                if (ar.isEmpty()) {
+                    it.setAmount(0);
+                    continue;
+                }
+
+                it.setAmount(ar.iterator().next().getAmount());
+            }
+
+            update();
+            return;
+        }
+
+        final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(player, this);
+        Bukkit.getPluginManager().callEvent(deathChestOpenEvent);
+        if (deathChestOpenEvent.isCancelled()) return;
+
+        gui.open(player);
     }
 
     public void reload() {

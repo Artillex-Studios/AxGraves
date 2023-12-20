@@ -13,6 +13,7 @@ import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGrave;
 import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.listeners.DeathListener;
+import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
 import com.artillexstudios.axgraves.schedulers.TickGraves;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -46,6 +47,7 @@ public final class AxGraves extends AxPlugin {
         MESSAGEUTILS = new MessageUtils(MESSAGES.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         final BukkitCommandHandler handler = BukkitCommandHandler.create(this);
         handler.register(new Commands());
