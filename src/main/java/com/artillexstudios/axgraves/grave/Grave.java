@@ -11,6 +11,7 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
 import com.artillexstudios.axgraves.utils.BlacklistUtils;
+import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.Utils;
 import dev.triumphteam.gui.guis.Gui;
@@ -135,7 +136,7 @@ public class Grave {
         if (deathChestInteractEvent.isCancelled()) return;
 
         if (this.storedXP != 0) {
-            player.giveExp(this.storedXP);
+            ExperienceUtils.changeExp(player, this.storedXP);
             this.storedXP = 0;
         }
 

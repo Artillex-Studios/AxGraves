@@ -4,6 +4,7 @@ import com.artillexstudios.axgraves.api.events.GravePreSpawnEvent;
 import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGrave;
+import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,11 +30,11 @@ public class DeathListener implements Listener {
         Grave grave = null;
 
         if (!event.getKeepInventory()) {
-            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), player.getTotalExperience());
+            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), ExperienceUtils.getExp(player));
         } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
+            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), ExperienceUtils.getExp(player));
             player.setLevel(0);
             player.setTotalExperience(0);
-            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), player.getTotalExperience());
             player.getInventory().clear();
         }
 
