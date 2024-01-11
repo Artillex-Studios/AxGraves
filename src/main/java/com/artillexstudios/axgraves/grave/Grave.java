@@ -108,7 +108,9 @@ public class Grave {
 
         if (CONFIG.getBoolean("private-announce-death-coordinates", false)){
             MESSAGEUTILS.sendFormatted(player, CONFIG.getString("prefix") + MESSAGES.getString("death-message-format.private"), deathMessageReplacements);
-        } else if (CONFIG.getBoolean("global-announce-death-coordinates", false)){
+        }
+
+        if (CONFIG.getBoolean("global-announce-death-coordinates", false)){
             Collection<? extends Player> deathMessageRecipients = Bukkit.getOnlinePlayers();
             int deathMessageRange = CONFIG.getInt("global-announce-death-message-range");
             if (deathMessageRange >= 0){
