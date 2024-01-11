@@ -19,6 +19,12 @@ instant-pickup-only-own: false
 # i would only recommend disabling this if you have a permission based keepinventory system
 override-keep-inventory: true
 
+# should the coordinates of the grave be announced to all players ?
+global-announce-death-coordinates: false
+
+# should the coordinates of the grave be announced to the player who died ?
+private-announce-death-coordinates: true
+
 # how high should death chest holograms spawn?
 # only applies to new graves
 hologram-height: 0.75
