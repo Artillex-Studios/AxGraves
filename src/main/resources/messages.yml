@@ -18,5 +18,9 @@ reload:
 interact:
   not-your-grave: "&#FF3333You can only open your own grave!"
 
+death-message-format:
+  private: "You died at X:%X% Y:%Y% Z:%Z% in %world%!"
+  global: "%player% died at X:%X% Y:%Y% Z:%Z% in %world%!"
+
 # do not edit
-version: 2
+version: 3
