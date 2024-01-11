@@ -93,6 +93,15 @@ public class Grave {
             msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
             hologram.addLine(StringUtils.format(msg));
         }
+
+        if (CONFIG.getBoolean("global-announce-death-coordinates", true)){
+            for (Player p : Bukkit.getOnlinePlayers()){
+                p.sendMessage(String.format("%s died at X:%.2f Y:%.2f Z:%.2f", player.getName(), location.getX(), location.getY(), location.getZ())); 
+            }
+        } else if (CONFIG.getBoolean("private-announce-death-coordinates", true)){
+            player.sendMessage(String.format("You died at X:%.2f Y:%.2f Z:%.2f", location.getX(), location.getY(), location.getZ())); 
+        }
+
     }
 
     public void update() {

@@ -52,14 +52,5 @@ public class DeathListener implements Listener {
 
         final GraveSpawnEvent graveSpawnEvent = new GraveSpawnEvent(player, grave);
         Bukkit.getPluginManager().callEvent(graveSpawnEvent);
-
-        Location deathLocation = player.getLocation();
-        if (CONFIG.getBoolean("global-announce-death-coordinates", true)){
-            for (Player p : Bukkit.getOnlinePlayers()){
-                p.sendMessage(String.format("%s died at X:%.2f Y:%.2f Z:%.2f", player.getName(), deathLocation.getX(), deathLocation.getY(), deathLocation.getZ())); 
-            }
-        } else if (CONFIG.getBoolean("private-announce-death-coordinates", true)){
-            player.sendMessage(String.format("You died at X:%.2f Y:%.2f Z:%.2f", deathLocation.getX(), deathLocation.getY(), deathLocation.getZ())); 
-        }
     }
 }
