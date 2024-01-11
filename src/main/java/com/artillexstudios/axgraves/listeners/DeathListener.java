@@ -12,7 +12,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
