@@ -12,6 +12,7 @@ import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
 import com.artillexstudios.axgraves.utils.BlacklistUtils;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
+import com.artillexstudios.axgraves.utils.InventoryUtils;
 import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.Utils;
 import dev.triumphteam.gui.guis.Gui;
@@ -52,7 +53,7 @@ public class Grave {
         this.player = player;
         this.playerName = player.getName();
 
-        final ItemStack[] items = Arrays.stream(itemsAr).filter(Objects::nonNull).toArray(ItemStack[]::new);
+        final ItemStack[] items = Arrays.stream(InventoryUtils.reOrderInventory(player.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
                 .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
                 .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
@@ -146,6 +147,32 @@ public class Grave {
 
             for (ItemStack it : gui.getInventory().getContents()) {
                 if (it == null) continue;
+
+                if (CONFIG.getBoolean("auto-equip-armor", true)) {
+                    if (it.getType().toString().endsWith("_HELMET") && player.getInventory().getHelmet() == null) {
+                        player.getInventory().setHelmet(it);
+                        it.setAmount(0);
+                        continue;
+                    }
+
+                    if (it.getType().toString().endsWith("_CHESTPLATE") && player.getInventory().getChestplate() == null) {
+                        player.getInventory().setChestplate(it);
+                        it.setAmount(0);
+                        continue;
+                    }
+
+                    if (it.getType().toString().endsWith("_LEGGINGS") && player.getInventory().getLeggings() == null) {
+                        player.getInventory().setLeggings(it);
+                        it.setAmount(0);
+                        continue;
+                    }
+
+                    if (it.getType().toString().endsWith("_BOOTS") && player.getInventory().getBoots() == null) {
+                        player.getInventory().setBoots(it);
+                        it.setAmount(0);
+                        continue;
+                    }
+                }
 
                 final Collection<ItemStack> ar = player.getInventory().addItem(it).values();
                 if (ar.isEmpty()) {

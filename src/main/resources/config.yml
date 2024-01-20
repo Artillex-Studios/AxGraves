@@ -47,6 +47,21 @@ auto-rotation:
 # false: everyone can open the grave
 interact-only-own: false
 
+# should the player lose any xp on death?
+# this is a percentage, so 0.5 would be 50% xp
+xp-keep-percentage: 1.0
+
+# what order should items be put in the grave?
+# all the other items will be put AFTER these
+# values: ARMOR, HAND, OFFHAND
+grave-item-order:
+  - "ARMOR"
+  - "HAND"
+  - "OFFHAND"
+
+# should the armor parts be auto equipped?
+auto-equip-armor: true
+
 # items that will be removed on death and will not show up in graves
 blacklisted-items:
   "1":
@@ -54,4 +69,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 5
+version: 6
