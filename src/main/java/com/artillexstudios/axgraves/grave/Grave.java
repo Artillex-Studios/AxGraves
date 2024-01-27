@@ -49,6 +49,7 @@ public class Grave {
     private final Hologram hologram;
 
     public Grave(Location loc, @NotNull Player player, @NotNull ItemStack[] itemsAr, int storedXP) {
+        loc.setY(Math.max(-64, loc.getY()));
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
