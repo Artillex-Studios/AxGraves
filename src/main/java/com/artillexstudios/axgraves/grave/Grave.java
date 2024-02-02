@@ -15,11 +15,13 @@ import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import com.artillexstudios.axgraves.utils.InventoryUtils;
 import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.Utils;
+
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -33,6 +35,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
@@ -94,6 +99,35 @@ public class Grave {
             msg = msg.replace("%item%", "" + countItems());
             msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
             hologram.addLine(StringUtils.format(msg));
+        }
+
+        Map<String, String> deathMessageReplacements = new HashMap<>();
+        deathMessageReplacements.put("%player%", player.getName());
+        deathMessageReplacements.put("%X%", Double.toString(location.getX()));
+        deathMessageReplacements.put("%Y%", Double.toString(location.getY()));
+        deathMessageReplacements.put("%Z%", Double.toString(location.getZ()));
+        deathMessageReplacements.put("%world%", location.getWorld().getName());
+
+        if (CONFIG.getBoolean("private-announce-death-coordinates", false)){
+            MESSAGEUTILS.sendFormatted(player, CONFIG.getString("prefix") + MESSAGES.getString("death-message-format.private"), deathMessageReplacements);
+        }
+
+        if (CONFIG.getBoolean("global-announce-death-coordinates", false)){
+            Collection<? extends Player> deathMessageRecipients = Bukkit.getOnlinePlayers();
+            int deathMessageRange = CONFIG.getInt("global-announce-death-message-range");
+            if (deathMessageRange >= 0){
+                deathMessageRecipients = deathMessageRecipients.stream()
+                                            .filter(p -> p.getWorld().equals(location.getWorld()))
+                                            .collect(Collectors.toCollection(ArrayList::new));
+            }
+            if (deathMessageRange >= 1){
+                deathMessageRecipients = deathMessageRecipients.stream()
+                                            .filter(p -> p.getLocation().distance(location) <= deathMessageRange)
+                                            .collect(Collectors.toCollection(ArrayList::new));
+            }
+            for (Player p : deathMessageRecipients){
+                MESSAGEUTILS.sendFormatted(player, CONFIG.getString("prefix") + MESSAGES.getString("death-message-format.public"), deathMessageReplacements);
+            }
         }
     }
 
