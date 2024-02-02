@@ -127,55 +127,55 @@ public class Grave {
         }
     }
 
-    public void interact(@NotNull Player player, org.bukkit.inventory.EquipmentSlot slot) {
-        if (CONFIG.getBoolean("interact-only-own", false) && !player.getUniqueId().equals(player.getUniqueId()) && !player.hasPermission("axgraves.admin")) {
-            MESSAGEUTILS.sendLang(player, "interact.not-your-grave");
+    public void interact(@NotNull Player opener, org.bukkit.inventory.EquipmentSlot slot) {
+        if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
+            MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
             return;
         }
 
-        final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(player, this);
+        final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(opener, this);
         Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
         if (deathChestInteractEvent.isCancelled()) return;
 
         if (this.storedXP != 0) {
-            ExperienceUtils.changeExp(player, this.storedXP);
+            ExperienceUtils.changeExp(opener, this.storedXP);
             this.storedXP = 0;
         }
 
-        if (slot.equals(org.bukkit.inventory.EquipmentSlot.HAND) && player.isSneaking()) {
+        if (slot.equals(org.bukkit.inventory.EquipmentSlot.HAND) && opener.isSneaking()) {
             if (!CONFIG.getBoolean("enable-instant-pickup", true)) return;
-            if (CONFIG.getBoolean("instant-pickup-only-own", false) && !player.getUniqueId().equals(player.getUniqueId())) return;
+            if (CONFIG.getBoolean("instant-pickup-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId())) return;
 
             for (ItemStack it : gui.getInventory().getContents()) {
                 if (it == null) continue;
 
                 if (CONFIG.getBoolean("auto-equip-armor", true)) {
-                    if (it.getType().toString().endsWith("_HELMET") && player.getInventory().getHelmet() == null) {
-                        player.getInventory().setHelmet(it);
+                    if (it.getType().toString().endsWith("_HELMET") && opener.getInventory().getHelmet() == null) {
+                        opener.getInventory().setHelmet(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_CHESTPLATE") && player.getInventory().getChestplate() == null) {
-                        player.getInventory().setChestplate(it);
+                    if (it.getType().toString().endsWith("_CHESTPLATE") && opener.getInventory().getChestplate() == null) {
+                        opener.getInventory().setChestplate(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_LEGGINGS") && player.getInventory().getLeggings() == null) {
-                        player.getInventory().setLeggings(it);
+                    if (it.getType().toString().endsWith("_LEGGINGS") && opener.getInventory().getLeggings() == null) {
+                        opener.getInventory().setLeggings(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_BOOTS") && player.getInventory().getBoots() == null) {
-                        player.getInventory().setBoots(it);
+                    if (it.getType().toString().endsWith("_BOOTS") && opener.getInventory().getBoots() == null) {
+                        opener.getInventory().setBoots(it);
                         it.setAmount(0);
                         continue;
                     }
                 }
 
-                final Collection<ItemStack> ar = player.getInventory().addItem(it).values();
+                final Collection<ItemStack> ar = opener.getInventory().addItem(it).values();
                 if (ar.isEmpty()) {
                     it.setAmount(0);
                     continue;
@@ -188,11 +188,11 @@ public class Grave {
             return;
         }
 
-        final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(player, this);
+        final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(opener, this);
         Bukkit.getPluginManager().callEvent(deathChestOpenEvent);
         if (deathChestOpenEvent.isCancelled()) return;
 
-        gui.open(player);
+        gui.open(opener);
     }
 
     public void reload() {
