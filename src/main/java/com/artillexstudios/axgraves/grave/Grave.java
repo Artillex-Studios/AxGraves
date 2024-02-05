@@ -20,6 +20,7 @@ import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -49,7 +50,12 @@ public class Grave {
     private final Hologram hologram;
 
     public Grave(Location loc, @NotNull Player player, @NotNull ItemStack[] itemsAr, int storedXP) {
-        loc.setY(Math.max(-64, loc.getY()));
+        if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
+            loc.setY(Math.max(0, loc.getY()));
+        } else {
+            loc.setY(Math.max(-64, loc.getY()));
+        }
+
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
         this.playerName = player.getName();
