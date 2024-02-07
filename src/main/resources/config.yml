@@ -62,6 +62,17 @@ grave-item-order:
 # should the armor parts be auto equipped?
 auto-equip-armor: true
 
+# how many limits can a single player have at one time?
+# if the limit is reached, the first grave will be removed
+# set to -1 to disable
+grave-limit: -1
+
+# if players die from any of the following, no graves will be spawned
+# list of valid values: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+# case sensitive
+blacklisted-death-causes:
+  - "EXAMPLE_DEATH_CAUSE"
+
 # items that will be removed on death and will not show up in graves
 blacklisted-items:
   "1":
@@ -69,4 +80,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 6
+version: 7

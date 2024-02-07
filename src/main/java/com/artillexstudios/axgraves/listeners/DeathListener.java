@@ -25,6 +25,7 @@ public class DeathListener implements Listener {
 
         final Player player = event.getEntity();
 
+        if (player.getLastDamageCause() != null && CONFIG.getStringList("blacklisted-death-causes").contains(player.getLastDamageCause().getCause().name())) return;
         if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
 
         Grave grave = null;

@@ -217,7 +217,7 @@ public class Grave {
     }
 
     public void remove() {
-        SpawnedGrave.removeGrave(Grave.this);
+        SpawnedGrave.removeGrave(this);
 
         Scheduler.get().runAt(location, scheduledTask -> {
             removeInventory();
