@@ -10,7 +10,7 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.U
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axgraves.grave.Grave;
-import com.artillexstudios.axgraves.grave.SpawnedGrave;
+import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
@@ -60,10 +60,10 @@ public final class AxGraves extends AxPlugin {
     }
 
     public void disable() {
-        for (Grave deathChest : SpawnedGrave.getGraves()) {
-            deathChest.removeInventory();
-            deathChest.getEntity().remove();
-            deathChest.getHologram().remove();
+        for (Grave grave : SpawnedGraves.getGraves()) {
+            grave.remove();
+            grave.getEntity().remove();
+            grave.getHologram().remove();
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {

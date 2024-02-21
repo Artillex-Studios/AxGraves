@@ -24,8 +24,10 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
@@ -40,16 +43,22 @@ import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
 public class Grave {
+    private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
     private final long spawned;
     private final Location location;
     private final OfflinePlayer player;
     private final String playerName;
     private final StorageGui gui;
     private int storedXP;
-    private final PacketArmorStand entity;
-    private final Hologram hologram;
+    private PacketArmorStand entity;
+    private Hologram hologram;
+    private boolean removed = false;
 
     public Grave(Location loc, @NotNull Player player, @NotNull ItemStack[] itemsAr, int storedXP) {
+        if (MESSAGES.getBoolean("death-message.enabled", false)) {
+            MESSAGEUTILS.sendLang(player, "death-message.message", Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ()));
+        }
+
         if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
             loc.setY(Math.max(0, loc.getY()));
         } else {
@@ -76,6 +85,12 @@ public class Grave {
             gui.addItem(it);
         }
 
+        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
+        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || countItems() == 0 && storedXP == 0)) {
+            remove();
+            return;
+        }
+
         entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0), EntityType.ARMOR_STAND);
         entity.setItem(EquipmentSlot.HELMET, Utils.getPlayerHead(player));
         entity.setSmall(true);
@@ -93,28 +108,20 @@ public class Grave {
         entity.onClick(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
         hologram = HologramFactory.get().spawnHologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
-
-        for (String msg : MESSAGES.getStringList("hologram")) {
-            msg = msg.replace("%player%", playerName);
-            msg = msg.replace("%xp%", "" + storedXP);
-            msg = msg.replace("%item%", "" + countItems());
-            msg = msg.replace("%despawn-time%", StringUtils.formatTime(CONFIG.getInt("despawn-time-seconds", 180) * 1_000L - (System.currentTimeMillis() - spawned)));
-            hologram.addLine(StringUtils.format(msg));
-        }
     }
 
     public void update() {
-        if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
-            entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
-            entity.teleport(entity.getLocation());
-        }
-
         int items = countItems();
 
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
-        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || items == 0)) {
+        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || items == 0 && storedXP == 0)) {
             remove();
             return;
+        }
+
+        if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
+            entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
+            entity.teleport(entity.getLocation());
         }
 
         int ms = MESSAGES.getStringList("hologram").size();
@@ -217,13 +224,15 @@ public class Grave {
     }
 
     public void remove() {
-        SpawnedGrave.removeGrave(this);
+        if (removed) return;
+        removed = true;
 
         Scheduler.get().runAt(location, scheduledTask -> {
+            SpawnedGraves.removeGrave(this);
             removeInventory();
 
-            entity.remove();
-            hologram.remove();
+            if (entity != null) entity.remove();
+            if (hologram != null) hologram.remove();
         });
 
     }
@@ -234,7 +243,9 @@ public class Grave {
         if (CONFIG.getBoolean("drop-items", true)) {
             for (ItemStack it : gui.getInventory().getContents()) {
                 if (it == null) continue;
-                location.getWorld().dropItem(location.clone().add(0, -1.0, 0), it);
+                final Item item = location.getWorld().dropItem(location.clone(), it);
+                if (CONFIG.getBoolean("dropped-item-velocity", true)) continue;
+                item.setVelocity(ZERO_VECTOR);
             }
         }
 
@@ -279,5 +290,9 @@ public class Grave {
 
     public Hologram getHologram() {
         return hologram;
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 }

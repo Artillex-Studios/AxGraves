@@ -7,6 +7,7 @@ help:
   - " "
   - "&#FF00FF&lAxGraves &7» "
   - " &7- &f/axgraves reload &7| &#FF00FFReload plugin"
+  - " &7- &f/axgraves list &7| &#FF00FFList spawned graves"
   - " "
 
 gui-name: "&0%player%'s Death Chest"
@@ -18,5 +19,14 @@ reload:
 interact:
   not-your-grave: "&#FF3333You can only open your own grave!"
 
+death-message:
+  enabled: false
+  message: "&#FFAAAAYou have died at &f%world% %x%, %y%, %z%&#FFAAAA!"
+
+grave-list:
+  header: "&#FF00FF&l=== GRAVES ==="
+  grave: "&#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"
+  no-graves: "&#FF3333There are no graves!"
+
 # do not edit
-version: 2
+version: 3

@@ -1,7 +1,7 @@
 package com.artillexstudios.axgraves.commands.subcommands;
 
 import com.artillexstudios.axgraves.grave.Grave;
-import com.artillexstudios.axgraves.grave.SpawnedGrave;
+import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class SubCommandReload {
 
 
         EXECUTOR.execute(() -> {
-            for (Grave deathChest : SpawnedGrave.getGraves()) {
+            for (Grave deathChest : SpawnedGraves.getGraves()) {
                 deathChest.reload();
                 deathChest.update();
             }

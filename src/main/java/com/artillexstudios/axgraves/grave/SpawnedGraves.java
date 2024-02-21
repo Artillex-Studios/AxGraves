@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
-public class SpawnedGrave {
+public class SpawnedGraves {
     private static final ConcurrentLinkedQueue<Grave> graves = new ConcurrentLinkedQueue<>();
 
     public static void addGrave(Grave grave) {

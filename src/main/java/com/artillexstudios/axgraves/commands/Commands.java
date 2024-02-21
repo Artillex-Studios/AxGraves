@@ -1,6 +1,7 @@
 package com.artillexstudios.axgraves.commands;
 
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axgraves.commands.subcommands.SubCommandList;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -25,5 +26,10 @@ public class Commands {
     @Subcommand("reload")
     public void reload(@NotNull Player sender) {
         new SubCommandReload().subCommand(sender);
+    }
+
+    @Subcommand("list")
+    public void list(@NotNull Player sender) {
+        new SubCommandList().subCommand(sender);
     }
 }

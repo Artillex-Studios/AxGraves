@@ -9,6 +9,9 @@ despawn-time-seconds: 180
 # if false: items will be removed
 drop-items: true
 
+# if drop-items is true, should the dropped items have a velocity? (so should they fly around when dropped or stay in one block?)
+dropped-item-velocity: true
+
 # should players have the ability to take all items from a death chest by shift right clicking?
 enable-instant-pickup: true
 
@@ -80,4 +83,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 7
+version: 8
