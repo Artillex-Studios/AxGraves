@@ -8,6 +8,7 @@ import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axapi.utils.placeholder.Placeholder;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
 import com.artillexstudios.axgraves.utils.BlacklistUtils;
@@ -60,10 +61,11 @@ public class Grave {
         }
 
         if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
-            loc.setY(Math.max(0, loc.getY()));
+            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", 0)));
         } else {
-            loc.setY(Math.max(-64, loc.getY()));
+            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", -64)));
         }
+        loc.setY(Math.min(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".max", 319)));
 
         this.location = LocationUtils.getCenterOf(loc);
         this.player = player;
@@ -108,6 +110,19 @@ public class Grave {
         entity.onClick(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
         hologram = HologramFactory.get().spawnHologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+
+        hologram.addPlaceholder(new Placeholder((player1, string) -> {
+            string = string.replace("%player%", playerName);
+            string = string.replace("%xp%", "" + storedXP);
+            string = string.replace("%item%", "" + countItems());
+            string = string.replace("%despawn-time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
+            return string;
+        }));
+
+        int ms = MESSAGES.getStringList("hologram").size();
+        for (int i = 0; i < ms; i++) {
+            hologram.addLine(StringUtils.format(MESSAGES.getStringList("hologram").get(i)));
+        }
     }
 
     public void update() {
@@ -123,32 +138,16 @@ public class Grave {
             entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
             entity.teleport(entity.getLocation());
         }
-
-        int ms = MESSAGES.getStringList("hologram").size();
-        for (int i = 0; i < ms; i++) {
-            String msg = MESSAGES.getStringList("hologram").get(i);
-            msg = msg.replace("%player%", playerName);
-            msg = msg.replace("%xp%", "" + storedXP);
-            msg = msg.replace("%item%", "" + items);
-            msg = msg.replace("%despawn-time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
-
-            if (i > hologram.getLines().size() - 1) {
-                hologram.addLine(StringUtils.format(msg));
-            } else {
-                hologram.setLine(i, StringUtils.format(msg));
-            }
-        }
     }
-
     public void interact(@NotNull Player opener, org.bukkit.inventory.EquipmentSlot slot) {
         if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
             MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
             return;
         }
 
-        final GraveInteractEvent deathChestInteractEvent = new GraveInteractEvent(opener, this);
-        Bukkit.getPluginManager().callEvent(deathChestInteractEvent);
-        if (deathChestInteractEvent.isCancelled()) return;
+        final GraveInteractEvent graveInteractEvent = new GraveInteractEvent(opener, this);
+        Bukkit.getPluginManager().callEvent(graveInteractEvent);
+        if (graveInteractEvent.isCancelled()) return;
 
         if (this.storedXP != 0) {
             ExperienceUtils.changeExp(opener, this.storedXP);
@@ -201,16 +200,23 @@ public class Grave {
             return;
         }
 
-        final GraveOpenEvent deathChestOpenEvent = new GraveOpenEvent(opener, this);
-        Bukkit.getPluginManager().callEvent(deathChestOpenEvent);
-        if (deathChestOpenEvent.isCancelled()) return;
+        final GraveOpenEvent graveOpenEvent = new GraveOpenEvent(opener, this);
+        Bukkit.getPluginManager().callEvent(graveOpenEvent);
+        if (graveOpenEvent.isCancelled()) return;
 
         gui.open(opener);
     }
 
     public void reload() {
-        for (int i = 0; i < hologram.getLines().size(); i++) {
-            hologram.removeLine(i);
+        int ms = MESSAGES.getStringList("hologram").size();
+
+        for (int i = 0; i < ms; i++) {
+            final String msg = MESSAGES.getStringList("hologram").get(i);
+            if (i > hologram.getLines().size() - 1) {
+                hologram.addLine(StringUtils.format(msg));
+            } else {
+                hologram.setLine(i, StringUtils.format(msg));
+            }
         }
     }
 

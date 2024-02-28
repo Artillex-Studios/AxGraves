@@ -70,6 +70,19 @@ auto-equip-armor: true
 # set to -1 to disable
 grave-limit: -1
 
+# you can add any amount of worlds
+# if you don't define a world, the plugin will use the default world limits of the dimension
+spawn-height-limits:
+  world:
+    min: -64
+    max: 319
+  world_nether:
+    min: 0
+    max: 319
+  world_the_end:
+    min: 0
+    max: 319
+
 # if players die from any of the following, no graves will be spawned
 # list of valid values: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
 # case sensitive
@@ -83,4 +96,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 8
+version: 9

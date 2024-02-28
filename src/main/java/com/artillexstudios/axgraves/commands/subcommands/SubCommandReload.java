@@ -30,9 +30,9 @@ public class SubCommandReload {
 
 
         EXECUTOR.execute(() -> {
-            for (Grave deathChest : SpawnedGraves.getGraves()) {
-                deathChest.reload();
-                deathChest.update();
+            for (Grave grave : SpawnedGraves.getGraves()) {
+                grave.reload();
+                grave.update();
             }
         });
         MESSAGEUTILS.sendLang(sender, "reload.success");
