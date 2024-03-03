@@ -89,6 +89,9 @@ spawn-height-limits:
 blacklisted-death-causes:
   - "EXAMPLE_DEATH_CAUSE"
 
+# should the grave disappear when all items get taken out of it?
+despawn-when-empty: true
+
 # items that will be removed on death and will not show up in graves
 blacklisted-items:
   "1":
@@ -96,4 +99,4 @@ blacklisted-items:
     name-contains: "Banned item's name"
 
 # do not edit
-version: 9
+version: 10

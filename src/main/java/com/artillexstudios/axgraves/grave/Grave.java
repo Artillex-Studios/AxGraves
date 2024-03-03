@@ -88,7 +88,7 @@ public class Grave {
         }
 
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
-        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || countItems() == 0 && storedXP == 0)) {
+        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || (CONFIG.getBoolean("despawn-when-empty", true) && countItems() == 0 && storedXP == 0))) {
             remove();
             return;
         }
@@ -129,7 +129,7 @@ public class Grave {
         int items = countItems();
 
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
-        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || items == 0 && storedXP == 0)) {
+        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || (CONFIG.getBoolean("despawn-when-empty", true) && items == 0 && storedXP == 0))) {
             remove();
             return;
         }
