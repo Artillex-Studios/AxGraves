@@ -12,7 +12,7 @@ import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 public class InventoryUtils {
 
     @NotNull
-    public static ItemStack[] reOrderInventory(@NotNull PlayerInventory inventory, @NotNull ItemStack[] keptItems) {
+    public static ItemStack[] reorderInventory(@NotNull PlayerInventory inventory, @NotNull ItemStack[] keptItems) {
         final ArrayList<ItemStack> itemsBefore = new ArrayList<>(Arrays.asList(keptItems));
         final ItemStack[] items = new ItemStack[itemsBefore.size()];
         int n = 0;

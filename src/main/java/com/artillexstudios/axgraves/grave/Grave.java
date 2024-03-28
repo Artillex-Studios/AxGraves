@@ -71,7 +71,7 @@ public class Grave {
         this.player = player;
         this.playerName = player.getName();
 
-        final ItemStack[] items = Arrays.stream(InventoryUtils.reOrderInventory(player.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
+        final ItemStack[] items = Arrays.stream(InventoryUtils.reorderInventory(player.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
                 .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
                 .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
@@ -87,8 +87,13 @@ public class Grave {
             gui.addItem(it);
         }
 
-        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
-        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || (CONFIG.getBoolean("despawn-when-empty", true) && countItems() == 0 && storedXP == 0))) {
+        int itemsAm = countItems();
+
+        int time = CONFIG.getInt("despawn-time-seconds", 180);
+        boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
+        boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
+        boolean empty = itemsAm == 0 && storedXP == 0;
+        if ((time != -1 && outOfTime) || (despawn && empty)) {
             remove();
             return;
         }
@@ -115,7 +120,7 @@ public class Grave {
             string = string.replace("%player%", playerName);
             string = string.replace("%xp%", "" + storedXP);
             string = string.replace("%item%", "" + countItems());
-            string = string.replace("%despawn-time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
+            string = string.replace("%despawn-time%", StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
             return string;
         }));
 
@@ -128,8 +133,11 @@ public class Grave {
     public void update() {
         int items = countItems();
 
-        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
-        if (dTime != -1 && (dTime * 1_000L <= (System.currentTimeMillis() - spawned) || (CONFIG.getBoolean("despawn-when-empty", true) && items == 0 && storedXP == 0))) {
+        int time = CONFIG.getInt("despawn-time-seconds", 180);
+        boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
+        boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
+        boolean empty = items == 0 && storedXP == 0;
+        if ((time != -1 && outOfTime) || (despawn && empty)) {
             remove();
             return;
         }

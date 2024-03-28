@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxGraves</artifactId>
-    <version>1.8.1</version>
+    <version>1.8.2</version>
     <packaging>jar</packaging>
 
     <name>AxGraves</name>
@@ -106,7 +106,7 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>1.4.75</version>
+            <version>1.4.107</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
