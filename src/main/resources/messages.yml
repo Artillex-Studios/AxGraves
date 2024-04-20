@@ -17,7 +17,7 @@ reload:
   failed: "&#FF3333Failed to reload the plugin! Something is wrong in the &f%file%&#FF3333 file, look in the console or use a yaml validator to fix the errors!"
 
 interact:
-  not-your-grave: "&#FF3333You can only open your own grave!"
+  not-your-grave: "&#FFAAFFYou can only open your own grave!"
 
 death-message:
   enabled: false
@@ -26,7 +26,7 @@ death-message:
 grave-list:
   header: "&#FF00FF&l=== GRAVES ==="
   grave: "&#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"
-  no-graves: "&#FF3333There are no graves!"
+  no-graves: "&#FFAAFFThere are no graves!"
 
 # do not edit
 version: 3

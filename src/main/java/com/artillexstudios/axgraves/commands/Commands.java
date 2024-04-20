@@ -13,10 +13,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 
 @Command({"axgraves", "axgrave", "grave", "graves"})
-@CommandPermission("axgraves.admin")
 public class Commands {
 
     @DefaultFor({"~", "~ help"})
+    @CommandPermission("axgraves.help")
     public void help(@NotNull Player sender) {
         for (String m : MESSAGES.getStringList("help")) {
             sender.sendMessage(StringUtils.formatToString(m));
@@ -24,11 +24,13 @@ public class Commands {
     }
 
     @Subcommand("reload")
+    @CommandPermission("axgraves.reload")
     public void reload(@NotNull Player sender) {
         new SubCommandReload().subCommand(sender);
     }
 
     @Subcommand("list")
+    @CommandPermission("axgraves.list")
     public void list(@NotNull Player sender) {
         new SubCommandList().subCommand(sender);
     }

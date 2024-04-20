@@ -3,3 +3,13 @@ version: '${project.version}'
 main: com.artillexstudios.axgraves.AxGraves
 api-version: '1.18'
 folia-supported: true
+
+permissions:
+  axgraves.reload:
+    default: op
+  axgraves.list:
+    default: true
+  axgraves.list.other:
+    default: op
+  axgraves.help:
+    default: true
