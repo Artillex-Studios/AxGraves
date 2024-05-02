@@ -5,11 +5,11 @@ api-version: '1.18'
 folia-supported: true
 
 permissions:
+  axgraves.help:
+    default: true
   axgraves.reload:
     default: op
   axgraves.list:
     default: true
   axgraves.list.other:
     default: op
-  axgraves.help:
-    default: true

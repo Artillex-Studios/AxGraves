@@ -3,7 +3,7 @@ package com.artillexstudios.axgraves.grave;
 import com.artillexstudios.axapi.entity.PacketEntityFactory;
 import com.artillexstudios.axapi.entity.impl.PacketArmorStand;
 import com.artillexstudios.axapi.hologram.Hologram;
-import com.artillexstudios.axapi.hologram.HologramFactory;
+import com.artillexstudios.axapi.hologram.HologramLine;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
@@ -114,7 +114,7 @@ public class Grave {
 
         entity.onClick(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-        hologram = HologramFactory.get().spawnHologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        hologram = new Hologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
         hologram.addPlaceholder(new Placeholder((player1, string) -> {
             string = string.replace("%player%", playerName);
@@ -126,7 +126,7 @@ public class Grave {
 
         int ms = MESSAGES.getStringList("hologram").size();
         for (int i = 0; i < ms; i++) {
-            hologram.addLine(StringUtils.format(MESSAGES.getStringList("hologram").get(i)));
+            hologram.addLine(StringUtils.formatToString(MESSAGES.getStringList("hologram").get(i)), HologramLine.Type.TEXT);
         }
     }
 
@@ -220,10 +220,10 @@ public class Grave {
 
         for (int i = 0; i < ms; i++) {
             final String msg = MESSAGES.getStringList("hologram").get(i);
-            if (i > hologram.getLines().size() - 1) {
-                hologram.addLine(StringUtils.format(msg));
+            if (i > hologram.page(0).lines().size() - 1) {
+                hologram.addLine(StringUtils.formatToString(msg), HologramLine.Type.TEXT);
             } else {
-                hologram.setLine(i, StringUtils.format(msg));
+                hologram.setLine(i, StringUtils.formatToString(msg));
             }
         }
     }
