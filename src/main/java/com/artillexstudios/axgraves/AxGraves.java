@@ -8,16 +8,18 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.G
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
 import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.utils.FastFieldAccessor;
 import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.MessageUtils;
+import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
-import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
 import com.artillexstudios.axgraves.schedulers.TickGraves;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Warning;
 import org.bukkit.entity.Player;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
@@ -50,17 +52,23 @@ public final class AxGraves extends AxPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
-        final BukkitCommandHandler handler = BukkitCommandHandler.create(this);
+        Warning.WarningState prevState = Bukkit.getWarningState();
+        FastFieldAccessor accessor = FastFieldAccessor.forClassField(Bukkit.getServer().getClass().getPackage().getName() + ".CraftServer", "warningState");
+        accessor.set(Bukkit.getServer(), Warning.WarningState.OFF);
+        final BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
+        accessor.set(Bukkit.getServer(), prevState);
+
         handler.register(new Commands());
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             NMSHandlers.getNmsHandler().injectPlayer(player);
         }
 
-        new TickGraves().start();
+        TickGraves.start();
     }
 
     public void disable() {
+        TickGraves.stop();
         for (Grave grave : SpawnedGraves.getGraves()) {
             grave.remove();
             grave.getEntity().remove();
