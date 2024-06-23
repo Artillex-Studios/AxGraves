@@ -1,9 +1,11 @@
 package com.artillexstudios.axgraves.grave;
 
-import com.artillexstudios.axapi.entity.PacketEntityFactory;
-import com.artillexstudios.axapi.entity.impl.PacketArmorStand;
 import com.artillexstudios.axapi.hologram.Hologram;
 import com.artillexstudios.axapi.hologram.HologramLine;
+import com.artillexstudios.axapi.items.WrappedItemStack;
+import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.packetentity.PacketEntity;
+import com.artillexstudios.axapi.packetentity.meta.entity.ArmorStandMeta;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
@@ -51,7 +53,7 @@ public class Grave {
     private final String playerName;
     private final StorageGui gui;
     private int storedXP;
-    private PacketArmorStand entity;
+    private PacketEntity entity;
     private Hologram hologram;
     private boolean removed = false;
 
@@ -98,21 +100,23 @@ public class Grave {
             return;
         }
 
-        entity = (PacketArmorStand) PacketEntityFactory.get().spawnEntity(location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0), EntityType.ARMOR_STAND);
-        entity.setItem(EquipmentSlot.HELMET, Utils.getPlayerHead(player));
-        entity.setSmall(true);
-        entity.setInvisible(true);
-        entity.setHasBasePlate(false);
+        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0));
+        entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(player)));
+        final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
+        meta.small(true);
+        meta.invisible(true);
+        meta.setNoBasePlate(false);
+        entity.spawn();
 
         if (CONFIG.getBoolean("rotate-head-360", true)) {
-            entity.getLocation().setYaw(player.getLocation().getYaw());
-            entity.teleport(entity.getLocation());
+            entity.location().setYaw(player.getLocation().getYaw());
+            entity.teleport(entity.location());
         } else {
-            entity.getLocation().setYaw(LocationUtils.getNearestDirection(player.getLocation().getYaw()));
-            entity.teleport(entity.getLocation());
+            entity.location().setYaw(LocationUtils.getNearestDirection(player.getLocation().getYaw()));
+            entity.teleport(entity.location());
         }
 
-        entity.onClick(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
+        entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
         hologram = new Hologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
@@ -143,8 +147,8 @@ public class Grave {
         }
 
         if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
-            entity.getLocation().setYaw(entity.getLocation().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
-            entity.teleport(entity.getLocation());
+            entity.location().setYaw(entity.location().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
+            entity.teleport(entity.location());
         }
     }
     public void interact(@NotNull Player opener, org.bukkit.inventory.EquipmentSlot slot) {
@@ -298,7 +302,7 @@ public class Grave {
         return storedXP;
     }
 
-    public PacketArmorStand getEntity() {
+    public PacketEntity getEntity() {
         return entity;
     }
 
