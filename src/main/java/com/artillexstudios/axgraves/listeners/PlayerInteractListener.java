@@ -13,6 +13,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(@NotNull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
+        if (event.getHand() == null) return;
 
         for (Grave grave : SpawnedGraves.getGraves()) {
             if (!grave.getLocation().getBlock().equals(event.getClickedBlock())) continue;

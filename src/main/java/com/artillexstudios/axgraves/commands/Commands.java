@@ -1,8 +1,11 @@
 package com.artillexstudios.axgraves.commands;
 
+import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandList;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.Command;
@@ -33,5 +36,11 @@ public class Commands {
     @CommandPermission("axgraves.list")
     public void list(@NotNull Player sender) {
         new SubCommandList().subCommand(sender);
+    }
+
+    @Subcommand("tp")
+    @CommandPermission("axgraves.tp")
+    public void tp(@NotNull Player sender, World world, double x, double y, double z) {
+        PaperUtils.teleportAsync(sender, new Location(world, x, y, z));
     }
 }
