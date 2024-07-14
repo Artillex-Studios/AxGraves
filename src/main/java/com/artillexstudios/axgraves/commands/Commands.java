@@ -4,6 +4,7 @@ import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandList;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
+import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -41,6 +42,10 @@ public class Commands {
     @Subcommand("tp")
     @CommandPermission("axgraves.tp")
     public void tp(@NotNull Player sender, World world, double x, double y, double z) {
-        PaperUtils.teleportAsync(sender, new Location(world, x, y, z));
+        final Location location = new Location(world, x, y, z);
+        if (!sender.hasPermission("axgraves.tp.bypass") && SpawnedGraves.getGraves().stream().filter(grave -> grave.getPlayer().getUniqueId().equals(sender.getUniqueId())).filter(grave -> grave.getLocation().equals(location)).findAny().isEmpty()) {
+            return;
+        }
+        PaperUtils.teleportAsync(sender, location);
     }
 }

@@ -13,3 +13,7 @@ permissions:
     default: true
   axgraves.list.other:
     default: op
+  axgraves.tp:
+    default: op
+  axgraves.tp.bypass:
+    default: op
