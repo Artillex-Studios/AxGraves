@@ -28,7 +28,7 @@ grave-list:
   grave: "&#FF00FF[TP] &#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"
   no-graves: "&#FFAAFFThere are no graves!"
 
-update-notifier: "&#FF88FFThere is a new version of the plugin available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
+update-notifier: "&#FF88FFThere is a new version of AxGraves available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not edit
 version: 4

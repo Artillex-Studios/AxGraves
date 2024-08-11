@@ -7,6 +7,7 @@ import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.Command;
@@ -21,7 +22,7 @@ public class Commands {
 
     @DefaultFor({"~", "~ help"})
     @CommandPermission("axgraves.help")
-    public void help(@NotNull Player sender) {
+    public void help(@NotNull CommandSender sender) {
         for (String m : MESSAGES.getStringList("help")) {
             sender.sendMessage(StringUtils.formatToString(m));
         }
@@ -29,13 +30,13 @@ public class Commands {
 
     @Subcommand("reload")
     @CommandPermission("axgraves.reload")
-    public void reload(@NotNull Player sender) {
+    public void reload(@NotNull CommandSender sender) {
         new SubCommandReload().subCommand(sender);
     }
 
     @Subcommand("list")
     @CommandPermission("axgraves.list")
-    public void list(@NotNull Player sender) {
+    public void list(@NotNull CommandSender sender) {
         new SubCommandList().subCommand(sender);
     }
 
