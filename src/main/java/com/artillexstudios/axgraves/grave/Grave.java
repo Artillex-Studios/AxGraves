@@ -142,7 +142,7 @@ public class Grave {
         boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
         boolean empty = items == 0 && storedXP == 0;
         if ((time != -1 && outOfTime) || (despawn && empty)) {
-            remove();
+            Scheduler.get().runAt(location, this::remove);
             return;
         }
 
@@ -245,7 +245,7 @@ public class Grave {
         if (removed) return;
         removed = true;
 
-        Scheduler.get().executeAt(location, () -> {
+        Scheduler.get().runAt(location, scheduledTask -> {
             SpawnedGraves.removeGrave(this);
             removeInventory();
 
