@@ -245,7 +245,7 @@ public class Grave {
         if (removed) return;
         removed = true;
 
-        Scheduler.get().runAt(location, scheduledTask -> {
+        Scheduler.get().executeAt(location, () -> {
             SpawnedGraves.removeGrave(this);
             removeInventory();
 
