@@ -245,14 +245,22 @@ public class Grave {
         if (removed) return;
         removed = true;
 
+        if (Bukkit.isPrimaryThread()) {
+            removeNow();
+            return;
+        }
+
         Scheduler.get().runAt(location, scheduledTask -> {
-            SpawnedGraves.removeGrave(this);
-            removeInventory();
-
-            if (entity != null) entity.remove();
-            if (hologram != null) hologram.remove();
+            removeNow();
         });
+    }
 
+    private void removeNow() {
+        SpawnedGraves.removeGrave(this);
+        removeInventory();
+
+        if (entity != null) entity.remove();
+        if (hologram != null) hologram.remove();
     }
 
     public void removeInventory() {
