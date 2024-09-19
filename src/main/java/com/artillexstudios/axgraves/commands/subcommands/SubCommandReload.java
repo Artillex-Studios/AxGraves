@@ -2,6 +2,7 @@ package com.artillexstudios.axgraves.commands.subcommands;
 
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.schedulers.SaveGraves;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,13 +29,15 @@ public class SubCommandReload {
             return;
         }
 
-
         EXECUTOR.execute(() -> {
             for (Grave grave : SpawnedGraves.getGraves()) {
                 grave.reload();
                 grave.update();
             }
         });
+
+        SaveGraves.start();
+
         MESSAGEUTILS.sendLang(sender, "reload.success");
     }
 }

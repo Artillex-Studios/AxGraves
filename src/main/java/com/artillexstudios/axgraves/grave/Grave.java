@@ -57,9 +57,10 @@ public class Grave {
     private Hologram hologram;
     private boolean removed = false;
 
-    public Grave(Location loc, @NotNull Player player, @NotNull ItemStack[] itemsAr, int storedXP) {
-        if (MESSAGES.getBoolean("death-message.enabled", false)) {
-            MESSAGEUTILS.sendLang(player, "death-message.message", Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ()));
+    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull ItemStack[] itemsAr, int storedXP, long date) {
+        Player pl = offlinePlayer instanceof Player p ? p : null;
+        if (pl != null && MESSAGES.getBoolean("death-message.enabled", false)) {
+            MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ()));
         }
 
         if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
@@ -69,18 +70,18 @@ public class Grave {
         }
         loc.setY(Math.min(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".max", 319)));
 
-        this.location = LocationUtils.getCenterOf(loc);
-        this.player = player;
-        this.playerName = player.getName();
+        this.location = LocationUtils.getCenterOf(loc, true);
+        this.player = offlinePlayer;
+        this.playerName = offlinePlayer.getName();
 
-        final ItemStack[] items = Arrays.stream(InventoryUtils.reorderInventory(player.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
+        final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
                 .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
                 .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
                 .create();
 
         this.storedXP = storedXP;
-        this.spawned = System.currentTimeMillis();
+        this.spawned = date;
 
         for (ItemStack it : items) {
             if (it == null) continue;
@@ -101,7 +102,7 @@ public class Grave {
         }
 
         entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0));
-        entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(player)));
+        entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(offlinePlayer)));
         final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
         meta.small(true);
         meta.invisible(true);
@@ -109,10 +110,10 @@ public class Grave {
         entity.spawn();
 
         if (CONFIG.getBoolean("rotate-head-360", true)) {
-            entity.location().setYaw(player.getLocation().getYaw());
+            entity.location().setYaw(loc.getYaw());
             entity.teleport(entity.location());
         } else {
-            entity.location().setYaw(LocationUtils.getNearestDirection(player.getLocation().getYaw()));
+            entity.location().setYaw(LocationUtils.getNearestDirection(loc.getYaw()));
             entity.teleport(entity.location());
         }
 

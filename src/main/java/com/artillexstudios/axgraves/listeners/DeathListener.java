@@ -32,9 +32,9 @@ public class DeathListener implements Listener {
 
         final int xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
         if (!event.getKeepInventory()) {
-            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), xp);
+            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
         } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
-            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), xp);
+            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), xp, System.currentTimeMillis());
             player.setLevel(0);
             player.setTotalExperience(0);
             player.getInventory().clear();

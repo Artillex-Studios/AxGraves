@@ -7,7 +7,6 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.Du
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
-import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axgraves.commands.Commands;
@@ -15,11 +14,10 @@ import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
+import com.artillexstudios.axgraves.schedulers.SaveGraves;
 import com.artillexstudios.axgraves.schedulers.TickGraves;
 import com.artillexstudios.axgraves.utils.UpdateNotifier;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 import java.io.File;
@@ -31,7 +29,7 @@ public final class AxGraves extends AxPlugin {
     public static Config CONFIG;
     public static Config MESSAGES;
     public static MessageUtils MESSAGEUTILS;
-    public static ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(5);
+    public static ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 
     public static AxPlugin getInstance() {
         return instance;
@@ -52,29 +50,27 @@ public final class AxGraves extends AxPlugin {
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         final BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
-
         handler.register(new Commands());
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            NMSHandlers.getNmsHandler().injectPlayer(player);
-        }
-
+        SpawnedGraves.loadFromFile();
         TickGraves.start();
+        SaveGraves.start();
 
         if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5076);
     }
 
     public void disable() {
         TickGraves.stop();
+        SaveGraves.stop();
         for (Grave grave : SpawnedGraves.getGraves()) {
-            grave.remove();
+            if (!CONFIG.getBoolean("save-graves.enabled", true))
+                grave.remove();
             grave.getEntity().remove();
             grave.getHologram().remove();
         }
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            NMSHandlers.getNmsHandler().uninjectPlayer(player);
-        }
+        if (CONFIG.getBoolean("save-graves.enabled", true))
+            SpawnedGraves.saveToFile();
     }
 
     public void updateFlags() {

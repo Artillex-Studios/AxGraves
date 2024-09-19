@@ -6,9 +6,14 @@ import org.jetbrains.annotations.NotNull;
 public class LocationUtils {
 
     @NotNull
-    public static Location getCenterOf(@NotNull Location location) {
+    public static Location getCenterOf(@NotNull Location location, boolean keepPitchYaw) {
         location.setY(Math.round(location.getY()));
-        return location.getBlock().getLocation().add(0.5, 0.5, 0.5);
+        final Location loc = location.getBlock().getLocation().add(0.5, 0.5, 0.5);
+        if (keepPitchYaw) {
+            loc.setPitch(location.getPitch());
+            loc.setYaw(location.getYaw());
+        }
+        return loc;
     }
 
     public static int getNearestDirection(float x) {

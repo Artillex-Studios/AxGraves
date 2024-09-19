@@ -1,11 +1,11 @@
 prefix: "&#FF00FF&lAxGraves &7» "
 
-# how fast should death chests disappear
+# how fast should the graves disappear
 # set to -1 to make graves last until the next server restart
 # in seconds
 despawn-time-seconds: 180
 
-# should death chests drop all items on the ground when they expire?
+# should graves drop all items on the ground when they expire?
 # if false: items will be removed
 drop-items: true
 
@@ -16,13 +16,13 @@ dropped-item-velocity: true
 enable-instant-pickup: true
 
 # only works if enable-instant-pickup is true
-# this makes it that only the owner of the death chest will be able to instant pickup it
+# this makes it that only the owner of the grave will be able to instantly pick it up
 instant-pickup-only-own: false
 
-# i would only recommend disabling this if you have a permission based keepinventory system
+# you should disable this if you want keep-inventory to work
 override-keep-inventory: true
 
-# how high should death chest holograms spawn?
+# how high should grave holograms spawn?
 # only applies to new graves
 hologram-height: 0.75
 
@@ -32,7 +32,7 @@ hologram-height: 0.75
 # only applies to new graves
 head-height: -1.2
 
-# worlds where death chests won't spawn
+# worlds where graves won't spawn
 # this is case-sensitive
 disabled-worlds:
   - "blacklisted_world"
@@ -65,7 +65,7 @@ grave-item-order:
 # should the armor parts be auto equipped?
 auto-equip-armor: true
 
-# how many limits can a single player have at one time?
+# how many graves can a single player have at the same time?
 # if the limit is reached, the first grave will be removed
 # set to -1 to disable
 grave-limit: -1
@@ -92,6 +92,13 @@ blacklisted-death-causes:
 # should the grave disappear when all items get taken out of it?
 despawn-when-empty: true
 
+save-graves:
+  # should graves be saved if the server stops?
+  enabled: true
+  # how often should the graves be saved?
+  # set to -1 to make it only save on shutdown (it might not save if there is a crash)
+  auto-save-seconds: 30
+
 # items that will be removed on death and will not show up in graves
 blacklisted-items:
   "1":
@@ -106,4 +113,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 11
+version: 12

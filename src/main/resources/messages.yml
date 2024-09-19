@@ -10,7 +10,7 @@ help:
   - " &7- &f/axgraves list &7| &#FF00FFList spawned graves"
   - " "
 
-gui-name: "&0%player%'s Death Chest"
+gui-name: "&0%player%'s Grave"
 
 reload:
   success: "&#33FF33Plugin successfully reloaded!"
