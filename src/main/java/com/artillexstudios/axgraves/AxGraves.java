@@ -52,7 +52,8 @@ public final class AxGraves extends AxPlugin {
         final BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
         handler.register(new Commands());
 
-        SpawnedGraves.loadFromFile();
+        if (CONFIG.getBoolean("save-graves.enabled", true))
+            SpawnedGraves.loadFromFile();
         TickGraves.start();
         SaveGraves.start();
 
@@ -71,6 +72,8 @@ public final class AxGraves extends AxPlugin {
 
         if (CONFIG.getBoolean("save-graves.enabled", true))
             SpawnedGraves.saveToFile();
+
+        EXECUTOR.shutdown();
     }
 
     public void updateFlags() {

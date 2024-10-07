@@ -73,12 +73,12 @@ public class SpawnedGraves {
     }
 
     public static void loadFromFile() {
-        JsonArray array = null;
+        JsonArray array;
         File file = new File(AxGraves.getInstance().getDataFolder(), "data.json");
         try (FileReader fw = new FileReader(file)) {
             array = gson.fromJson(fw, JsonArray.class);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            return;
         }
         file.delete();
         if (array == null) return;
