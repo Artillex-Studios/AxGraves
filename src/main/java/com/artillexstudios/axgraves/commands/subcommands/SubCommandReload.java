@@ -13,10 +13,10 @@ import static com.artillexstudios.axgraves.AxGraves.EXECUTOR;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
-public class SubCommandReload {
+public enum SubCommandReload {
+    INSTANCE;
 
     public void subCommand(@NotNull CommandSender sender) {
-
         final String errorMsg = CONFIG.getString("prefix") + MESSAGES.getString("reload.failed");
 
         if (!CONFIG.reload()) {

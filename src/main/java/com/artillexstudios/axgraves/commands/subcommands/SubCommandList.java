@@ -18,7 +18,8 @@ import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
-public class SubCommandList {
+public enum SubCommandList {
+    INSTANCE;
 
     public void subCommand(@NotNull CommandSender sender) {
         if (SpawnedGraves.getGraves().isEmpty()) {

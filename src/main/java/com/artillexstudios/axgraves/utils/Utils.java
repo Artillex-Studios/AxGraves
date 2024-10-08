@@ -11,9 +11,10 @@ public class Utils {
     @NotNull
     public static ItemStack getPlayerHead(@NotNull OfflinePlayer player) {
         final ItemStack it = new ItemStack(Material.PLAYER_HEAD);
-        final SkullMeta skullMeta = (SkullMeta) it.getItemMeta();
-        skullMeta.setOwningPlayer(player);
-        it.setItemMeta(skullMeta);
+        if (it.getItemMeta() instanceof SkullMeta skullMeta) {
+            skullMeta.setOwningPlayer(player);
+            it.setItemMeta(skullMeta);
+        }
 
         return it;
     }
