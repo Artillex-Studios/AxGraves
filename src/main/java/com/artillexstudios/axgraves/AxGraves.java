@@ -54,6 +54,7 @@ public final class AxGraves extends AxPlugin {
 
         if (CONFIG.getBoolean("save-graves.enabled", true))
             SpawnedGraves.loadFromFile();
+
         TickGraves.start();
         SaveGraves.start();
 

@@ -83,15 +83,19 @@ public class SpawnedGraves {
         file.delete();
         if (array == null) return;
 
-        for (JsonElement el : array) {
-            JsonObject obj = el.getAsJsonObject();
-            Location location = Serializers.LOCATION.deserialize(obj.get("location").getAsString());
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(obj.get("owner").getAsString()));
-            String itStr = obj.get("items").getAsString();
-            ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(Base64.getDecoder().decode(itStr));
-            int xp = obj.get("xp").getAsInt();
-            long date = obj.get("date").getAsLong();
-            addGrave(new Grave(location, owner, items, xp, date));
+        try {
+            for (JsonElement el : array) {
+                JsonObject obj = el.getAsJsonObject();
+                Location location = Serializers.LOCATION.deserialize(obj.get("location").getAsString());
+                OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(obj.get("owner").getAsString()));
+                String itStr = obj.get("items").getAsString();
+                ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(Base64.getDecoder().decode(itStr));
+                int xp = obj.get("xp").getAsInt();
+                long date = obj.get("date").getAsLong();
+                addGrave(new Grave(location, owner, items, xp, date));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

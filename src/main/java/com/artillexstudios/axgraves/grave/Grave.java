@@ -44,6 +44,7 @@ import java.util.Objects;
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
+import static javax.swing.text.html.HTML.Attribute.LANG;
 
 public class Grave {
     private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
@@ -72,7 +73,7 @@ public class Grave {
 
         this.location = LocationUtils.getCenterOf(loc, true);
         this.player = offlinePlayer;
-        this.playerName = offlinePlayer.getName();
+        this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
 
         final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
