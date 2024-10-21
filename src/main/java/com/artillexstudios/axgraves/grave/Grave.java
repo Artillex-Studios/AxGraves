@@ -44,7 +44,6 @@ import java.util.Objects;
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
-import static javax.swing.text.html.HTML.Attribute.LANG;
 
 public class Grave {
     private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
