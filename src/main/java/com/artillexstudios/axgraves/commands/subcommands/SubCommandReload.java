@@ -20,7 +20,7 @@ public enum SubCommandReload {
         final String errorMsg = CONFIG.getString("prefix") + MESSAGES.getString("reload.failed");
 
         if (!CONFIG.reload()) {
-            MESSAGEUTILS.sendFormatted(sender, "reload.failed", Map.of("%file%", "config.yml"));
+            MESSAGEUTILS.sendLang(sender, "reload.failed", Map.of("%file%", "config.yml"));
             return;
         }
 
