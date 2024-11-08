@@ -64,6 +64,7 @@ public final class AxGraves extends AxPlugin {
     public void disable() {
         TickGraves.stop();
         SaveGraves.stop();
+
         for (Grave grave : SpawnedGraves.getGraves()) {
             if (!CONFIG.getBoolean("save-graves.enabled", true))
                 grave.remove();

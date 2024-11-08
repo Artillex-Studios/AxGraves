@@ -65,7 +65,8 @@ public class SpawnedGraves {
             array.add(obj);
         }
 
-        try (FileWriter fw = new FileWriter(new File(AxGraves.getInstance().getDataFolder(), "data.json"))){
+        File file = new File(AxGraves.getInstance().getDataFolder(), "data.json");
+        try (FileWriter fw = new FileWriter(file)) {
             gson.toJson(array, fw);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -87,6 +88,7 @@ public class SpawnedGraves {
             for (JsonElement el : array) {
                 JsonObject obj = el.getAsJsonObject();
                 Location location = Serializers.LOCATION.deserialize(obj.get("location").getAsString());
+                if (location == null || location.getWorld() == null) continue;
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(obj.get("owner").getAsString()));
                 String itStr = obj.get("items").getAsString();
                 ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(Base64.getDecoder().decode(itStr));
