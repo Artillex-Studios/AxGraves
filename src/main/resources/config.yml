@@ -54,6 +54,10 @@ interact-only-own: false
 # this is a percentage, so 0.5 would be 50% xp
 xp-keep-percentage: 1.0
 
+# should the plugin store XP in graves?
+# if disabled, XP will be dropped on the ground
+store-xp: true
+
 # what order should items be put in the grave?
 # all the other items will be put AFTER these
 # values: ARMOR, HAND, OFFHAND
@@ -113,4 +117,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 12
+version: 13

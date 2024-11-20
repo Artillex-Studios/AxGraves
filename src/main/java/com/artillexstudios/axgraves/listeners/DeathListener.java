@@ -30,13 +30,18 @@ public class DeathListener implements Listener {
 
         Grave grave = null;
 
-        final int xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
+        int xp = 0;
+        if (CONFIG.getBoolean("store-xp", true))
+            xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
+
         if (!event.getKeepInventory()) {
             grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
         } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
             grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), xp, System.currentTimeMillis());
-            player.setLevel(0);
-            player.setTotalExperience(0);
+            if (CONFIG.getBoolean("store-xp", true)) {
+                player.setLevel(0);
+                player.setTotalExperience(0);
+            }
             player.getInventory().clear();
         }
 
@@ -46,7 +51,8 @@ public class DeathListener implements Listener {
         Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
         if (gravePreSpawnEvent.isCancelled()) return;
 
-        event.setDroppedExp(0);
+        if (CONFIG.getBoolean("store-xp", true))
+            event.setDroppedExp(0);
         event.getDrops().clear();
 
         SpawnedGraves.addGrave(grave);
