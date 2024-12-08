@@ -7,8 +7,8 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.Du
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
-import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.MessageUtils;
+import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
 import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
@@ -68,8 +68,11 @@ public final class AxGraves extends AxPlugin {
         for (Grave grave : SpawnedGraves.getGraves()) {
             if (!CONFIG.getBoolean("save-graves.enabled", true))
                 grave.remove();
-            grave.getEntity().remove();
-            grave.getHologram().remove();
+
+            if (grave.getEntity() != null)
+                grave.getEntity().remove();
+            if (grave.getHologram() != null)
+                grave.getHologram().remove();
         }
 
         if (CONFIG.getBoolean("save-graves.enabled", true))
@@ -78,9 +81,9 @@ public final class AxGraves extends AxPlugin {
         EXECUTOR.shutdown();
     }
 
-    public void updateFlags() {
-        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
-        FeatureFlags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
-        FeatureFlags.HOLOGRAM_UPDATE_TICKS.set(5L);
+    public void updateFlags(FeatureFlags flags) {
+        flags.USE_LEGACY_HEX_FORMATTER.set(true);
+        flags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
+        flags.HOLOGRAM_UPDATE_TICKS.set(5L);
     }
 }
