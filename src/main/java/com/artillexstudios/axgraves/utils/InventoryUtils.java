@@ -1,5 +1,6 @@
 package com.artillexstudios.axgraves.utils;
 
+import com.artillexstudios.axgraves.config.Config;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+
 
 public class InventoryUtils {
 
@@ -17,7 +18,7 @@ public class InventoryUtils {
         final ItemStack[] items = new ItemStack[itemsBefore.size()];
         int n = 0;
 
-        for (String str : CONFIG.getStringList("grave-item-order")) {
+        for (String str : Config.graveItemOrder) {
             switch (str) {
                 case "ARMOR" -> {
                     for (ItemStack it : inventory.getArmorContents()) {

@@ -9,10 +9,14 @@ import com.artillexstudios.axapi.packetentity.meta.entity.ArmorStandMeta;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
+import com.artillexstudios.axapi.utils.ItemBuilder;
+import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axapi.utils.placeholder.Placeholder;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
+import com.artillexstudios.axgraves.config.Config;
+import com.artillexstudios.axgraves.config.Lang;
 import com.artillexstudios.axgraves.utils.BlacklistUtils;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import com.artillexstudios.axgraves.utils.InventoryUtils;
@@ -42,10 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
-
 public class Grave {
     private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
     private final long spawned;
@@ -60,24 +60,25 @@ public class Grave {
 
     public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull ItemStack[] itemsAr, int storedXP, long date) {
         Player pl = offlinePlayer instanceof Player p ? p : null;
-        if (pl != null && MESSAGES.getBoolean("death-message.enabled", false)) {
-            MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ()));
+        if (pl != null && Lang.DeathMessage.enabled) {
+            MessageUtils.sendMessage(pl, Config.prefix, Lang.DeathMessage.message, ItemBuilder.mapResolvers(Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ())));
         }
 
+        var limits = Config.spawnHeightLimits.get(loc.getWorld().getName());
         if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
-            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", 0)));
+            loc.setY(Math.max(loc.getY(), limits.getOrDefault("min", 0)));
         } else {
-            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", -64)));
+            loc.setY(Math.max(loc.getY(), limits.getOrDefault("min", -64)));
         }
-        loc.setY(Math.min(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".max", 319)));
+        loc.setY(Math.min(loc.getY(), limits.getOrDefault("max", 319)));
 
         this.location = LocationUtils.getCenterOf(loc, true);
         this.player = offlinePlayer;
-        this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
+        this.playerName = offlinePlayer.getName() == null ? Lang.unknownPlayer : offlinePlayer.getName();
 
         final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Gui.storage()
-                .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
+                .title(StringUtils.format(Lang.guiName.replace("%player%", playerName)))
                 .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
                 .create();
 
@@ -93,16 +94,16 @@ public class Grave {
 
         int itemsAm = countItems();
 
-        int time = CONFIG.getInt("despawn-time-seconds", 180);
+        int time = Config.despawnTimeSeconds;
         boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
-        boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
+        boolean despawn = Config.despawnWhenEmpty;
         boolean empty = itemsAm == 0 && storedXP == 0;
         if ((time != -1 && outOfTime) || (despawn && empty)) {
             remove();
             return;
         }
 
-        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0));
+        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, Config.headHeight, 0));
         entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(offlinePlayer)));
         final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
         meta.small(true);
@@ -110,7 +111,7 @@ public class Grave {
         meta.setNoBasePlate(false);
         entity.spawn();
 
-        if (CONFIG.getBoolean("rotate-head-360", true)) {
+        if (Config.rotateHead360) {
             entity.location().setYaw(loc.getYaw());
             entity.teleport(entity.location());
         } else {
@@ -120,7 +121,7 @@ public class Grave {
 
         entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-        hologram = new Hologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        hologram = new Hologram(location.clone().add(0, Config.hologramHeight, 0), Serializers.LOCATION.serialize(location), 0.3);
 
         hologram.addPlaceholder(new Placeholder((player1, string) -> {
             string = string.replace("%player%", playerName);
@@ -130,32 +131,32 @@ public class Grave {
             return string;
         }));
 
-        int ms = MESSAGES.getStringList("hologram").size();
+        int ms = Lang.hologram.size();
         for (int i = 0; i < ms; i++) {
-            hologram.addLine(StringUtils.formatToString(MESSAGES.getStringList("hologram").get(i)), HologramLine.Type.TEXT);
+            hologram.addLine(StringUtils.formatToString(Lang.hologram.get(i)), HologramLine.Type.TEXT);
         }
     }
 
     public void update() {
         int items = countItems();
 
-        int time = CONFIG.getInt("despawn-time-seconds", 180);
+        int time = Config.despawnTimeSeconds;
         boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
-        boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
+        boolean despawn = Config.despawnWhenEmpty;
         boolean empty = items == 0 && storedXP == 0;
         if ((time != -1 && outOfTime) || (despawn && empty)) {
             Scheduler.get().runAt(location, this::remove);
             return;
         }
 
-        if (CONFIG.getBoolean("auto-rotation.enabled", false)) {
-            entity.location().setYaw(entity.location().getYaw() + CONFIG.getFloat("auto-rotation.speed", 10f));
+        if (Config.AutoRotation.enabled) {
+            entity.location().setYaw(entity.location().getYaw() + Config.AutoRotation.speed);
             entity.teleport(entity.location());
         }
     }
     public void interact(@NotNull Player opener, org.bukkit.inventory.EquipmentSlot slot) {
-        if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
-            MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
+        if (Config.interactOnlyOwn && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
+            MessageUtils.sendMessage(opener, Config.prefix, Lang.Interact.notYourGrave);
             return;
         }
 
@@ -170,13 +171,13 @@ public class Grave {
 
         if (slot.equals(org.bukkit.inventory.EquipmentSlot.HAND) && opener.isSneaking()) {
             if (opener.getGameMode() == GameMode.SPECTATOR) return;
-            if (!CONFIG.getBoolean("enable-instant-pickup", true)) return;
-            if (CONFIG.getBoolean("instant-pickup-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId())) return;
+            if (!Config.enableInstantPickup) return;
+            if (Config.instantPickupOnlyOwn && !opener.getUniqueId().equals(player.getUniqueId())) return;
 
             for (ItemStack it : gui.getInventory().getContents()) {
                 if (it == null) continue;
 
-                if (CONFIG.getBoolean("auto-equip-armor", true)) {
+                if (Config.autoEquipArmor) {
                     if (it.getType().toString().endsWith("_HELMET") && opener.getInventory().getHelmet() == null) {
                         opener.getInventory().setHelmet(it);
                         it.setAmount(0);
@@ -223,10 +224,10 @@ public class Grave {
     }
 
     public void reload() {
-        int ms = MESSAGES.getStringList("hologram").size();
+        int ms = Lang.hologram.size();
 
         for (int i = 0; i < ms; i++) {
-            final String msg = MESSAGES.getStringList("hologram").get(i);
+            final String msg = Lang.hologram.get(i);
             if (i > hologram.page(0).lines().size() - 1) {
                 hologram.addLine(StringUtils.formatToString(msg), HologramLine.Type.TEXT);
             } else {
@@ -269,11 +270,11 @@ public class Grave {
     public void removeInventory() {
         closeInventory();
 
-        if (CONFIG.getBoolean("drop-items", true)) {
+        if (Config.dropItems) {
             for (ItemStack it : gui.getInventory().getContents()) {
                 if (it == null) continue;
                 final Item item = location.getWorld().dropItem(location.clone(), it);
-                if (CONFIG.getBoolean("dropped-item-velocity", true)) continue;
+                if (Config.droppedItemVelocity) continue;
                 item.setVelocity(ZERO_VECTOR);
             }
         }

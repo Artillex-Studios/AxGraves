@@ -2,6 +2,7 @@ package com.artillexstudios.axgraves.grave;
 
 import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axgraves.AxGraves;
+import com.artillexstudios.axgraves.config.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -19,14 +20,14 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+
 
 public class SpawnedGraves {
     private static final ConcurrentLinkedQueue<Grave> graves = new ConcurrentLinkedQueue<>();
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static void addGrave(Grave grave) {
-        int graveLimit = CONFIG.getInt("grave-limit", -1);
+        int graveLimit = Config.graveLimit;
         if (graveLimit != -1) {
             int num = 0;
             Grave oldest = grave;

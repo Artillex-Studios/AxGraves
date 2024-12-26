@@ -2,6 +2,7 @@ package com.artillexstudios.axgraves.listeners;
 
 import com.artillexstudios.axgraves.api.events.GravePreSpawnEvent;
 import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
+import com.artillexstudios.axgraves.config.Config;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
@@ -14,31 +15,30 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+
 
 public class DeathListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(@NotNull PlayerDeathEvent event) {
-        if (CONFIG.getStringList("disabled-worlds") != null && CONFIG.getStringList("disabled-worlds").contains(event.getEntity().getWorld().getName())) return;
-        if (!CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) return;
+        if (Config.disabledWorlds.contains(event.getEntity().getWorld().getName())) return;
+        if (!Config.overrideKeepInventory && event.getKeepInventory()) return;
 
         final Player player = event.getEntity();
 
-        if (player.getLastDamageCause() != null && CONFIG.getStringList("blacklisted-death-causes").contains(player.getLastDamageCause().getCause().name())) return;
+        if (player.getLastDamageCause() != null && Config.blacklistedDeathCauses.contains(player.getLastDamageCause().getCause().name())) return;
         if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
 
         Grave grave = null;
 
         int xp = 0;
-        if (CONFIG.getBoolean("store-xp", true))
-            xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
+        if (Config.storeXp) xp = Math.round(ExperienceUtils.getExp(player) * Config.xpKeepPercentage);
 
         if (!event.getKeepInventory()) {
             grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
-        } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
+        } else if (Config.overrideKeepInventory) {
             grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), xp, System.currentTimeMillis());
-            if (CONFIG.getBoolean("store-xp", true)) {
+            if (Config.storeXp) {
                 player.setLevel(0);
                 player.setTotalExperience(0);
             }
@@ -51,8 +51,7 @@ public class DeathListener implements Listener {
         Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
         if (gravePreSpawnEvent.isCancelled()) return;
 
-        if (CONFIG.getBoolean("store-xp", true))
-            event.setDroppedExp(0);
+        if (Config.storeXp) event.setDroppedExp(0);
         event.getDrops().clear();
 
         SpawnedGraves.addGrave(grave);

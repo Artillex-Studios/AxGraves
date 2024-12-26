@@ -4,6 +4,8 @@ import com.artillexstudios.axapi.AxPlugin;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.NumberUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axgraves.config.Config;
+import com.artillexstudios.axgraves.config.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,8 +19,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.HashMap;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class UpdateNotifier implements Listener {
@@ -51,7 +51,7 @@ public class UpdateNotifier implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         if (latest == null || newest) return;
-        if (!CONFIG.getBoolean("update-notifier.on-join", true)) return;
+        if (!Config.UpdateNotifier.onJoin) return;
         if (!event.getPlayer().hasPermission(instance.getName().toLowerCase() + ".update-notify")) return;
         Scheduler.get().runLaterAsync(t -> {
             event.getPlayer().sendMessage(getMessage());
@@ -62,7 +62,7 @@ public class UpdateNotifier implements Listener {
         HashMap<String, String> map = new HashMap<>();
         map.put("%current%", current);
         map.put("%latest%", latest);
-        return StringUtils.formatToString(CONFIG.getString("prefix") + MESSAGES.getString("update-notifier"), map);
+        return StringUtils.formatToString(Config.prefix + Lang.updateNotifier, map);
     }
 
     @Nullable

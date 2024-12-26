@@ -1,6 +1,9 @@
 package com.artillexstudios.axgraves.commands.subcommands;
 
+import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axgraves.config.Config;
+import com.artillexstudios.axgraves.config.Lang;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -14,22 +17,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
-
 public enum SubCommandList {
     INSTANCE;
 
     public void subCommand(@NotNull CommandSender sender) {
         if (SpawnedGraves.getGraves().isEmpty()) {
-            MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
+            MessageUtils.sendMessage(sender, Config.prefix, Lang.GraveList.noGraves);
             return;
         }
 
-        MESSAGEUTILS.sendFormatted(sender, MESSAGES.getString("grave-list.header"));
+        MessageUtils.sendMessage(sender, Lang.GraveList.header);
 
-        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
+        int dTime = Config.despawnTimeSeconds;
         for (Grave grave : SpawnedGraves.getGraves()) {
             if (!sender.hasPermission("axgraves.list.other") &&
                     sender instanceof Player &&
@@ -45,7 +44,7 @@ public enum SubCommandList {
                     "%z%", "" + l.getBlockZ(),
                     "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned()));
 
-            BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(MESSAGES.getString("grave-list.grave"), new HashMap<>(map)));
+            BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(Lang.GraveList.grave, new HashMap<>(map)));
             for (BaseComponent component : text) {
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/axgraves tp %s %f %f %f", l.getWorld().getName(), l.getX(), l.getY(), l.getZ())));
             }

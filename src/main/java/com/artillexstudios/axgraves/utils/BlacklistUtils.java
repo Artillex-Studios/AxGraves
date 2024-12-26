@@ -1,29 +1,31 @@
 package com.artillexstudios.axgraves.utils;
 
+import com.artillexstudios.axgraves.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
+import java.util.Map;
+
 
 public class BlacklistUtils {
 
     public static boolean isBlacklisted(ItemStack it) {
         if (it == null) return false;
 
-        if (CONFIG.getSection("blacklisted-items") == null) return false;
-        for (String s : CONFIG.getSection("blacklisted-items").getRoutesAsStrings(false)) {
+        if (Config.blacklistedItems == null) return false;
+        for (Map.Entry<String, Map<String, String>> s : Config.blacklistedItems.entrySet()) {
             boolean banned = false;
 
-            if (CONFIG.getString("blacklisted-items." + s + ".material") != null) {
-                final Material mt = Material.getMaterial(CONFIG.getString("blacklisted-items." + s + ".material").toUpperCase());
+            if (s.getValue().get(".material") != null) {
+                final Material mt = Material.getMaterial(s.getValue().get(".material").toUpperCase());
                 if (mt == null) continue;
                 if (!it.getType().equals(mt)) continue;
                 banned = true;
             }
 
-            if (CONFIG.getString("blacklisted-items." + s + ".name-contains") != null) {
+            if (s.getValue().get(".name-contains") != null) {
                 if (it.getItemMeta() == null) continue;
-                if (!it.getItemMeta().getDisplayName().contains(CONFIG.getString("blacklisted-items." + s + ".name-contains"))) continue;
+                if (!it.getItemMeta().getDisplayName().contains(s.getValue().get(".name-contains"))) continue;
                 banned = true;
             }
 

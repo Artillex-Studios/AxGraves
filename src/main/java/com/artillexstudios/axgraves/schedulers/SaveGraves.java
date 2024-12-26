@@ -1,11 +1,11 @@
 package com.artillexstudios.axgraves.schedulers;
 
+import com.artillexstudios.axgraves.config.Config;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.EXECUTOR;
 
 public class SaveGraves {
@@ -14,8 +14,8 @@ public class SaveGraves {
     public static void start() {
         if (future != null) future.cancel(true);
 
-        if (!CONFIG.getBoolean("save-graves.enabled", true)) return;
-        int seconds = CONFIG.getInt("save-graves.auto-save-seconds", 30);
+        if (!Config.SaveGraves.enabled) return;
+        int seconds = Config.SaveGraves.autoSaveSeconds;
         if (seconds == -1) return;
 
         future = EXECUTOR.scheduleAtFixedRate(() -> {

@@ -4,6 +4,7 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandList;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandReload;
 import com.artillexstudios.axgraves.commands.subcommands.SubCommandTeleport;
+import com.artillexstudios.axgraves.config.Lang;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +14,7 @@ import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+
 
 @Command({"axgraves", "axgrave", "grave", "graves"})
 public class Commands {
@@ -21,7 +22,7 @@ public class Commands {
     @DefaultFor({"~", "~ help"})
     @CommandPermission("axgraves.help")
     public void help(@NotNull CommandSender sender) {
-        for (String m : MESSAGES.getStringList("help")) {
+        for (String m : Lang.help) {
             sender.sendMessage(StringUtils.formatToString(m));
         }
     }
