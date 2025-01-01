@@ -6,6 +6,7 @@ import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,7 +19,7 @@ import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
 public class DeathListener implements Listener {
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(@NotNull PlayerDeathEvent event) {
         if (CONFIG.getStringList("disabled-worlds") != null && CONFIG.getStringList("disabled-worlds").contains(event.getEntity().getWorld().getName())) return;
         if (!CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) return;
@@ -34,10 +35,12 @@ public class DeathListener implements Listener {
         if (CONFIG.getBoolean("store-xp", true))
             xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
 
+        Location location = player.getLocation();
+        location.add(0, -0.5, 0);
         if (!event.getKeepInventory()) {
-            grave = new Grave(player.getLocation(), player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
+            grave = new Grave(location, player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
         } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
-            grave = new Grave(player.getLocation(), player, player.getInventory().getContents(), xp, System.currentTimeMillis());
+            grave = new Grave(location, player, player.getInventory().getContents(), xp, System.currentTimeMillis());
             if (CONFIG.getBoolean("store-xp", true)) {
                 player.setLevel(0);
                 player.setTotalExperience(0);

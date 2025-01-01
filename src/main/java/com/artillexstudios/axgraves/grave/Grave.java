@@ -54,24 +54,24 @@ public class Grave {
     private final String playerName;
     private final StorageGui gui;
     private int storedXP;
-    private PacketEntity entity;
-    private Hologram hologram;
+    private final PacketEntity entity;
+    private final Hologram hologram;
     private boolean removed = false;
 
     public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull ItemStack[] itemsAr, int storedXP, long date) {
+        this.location = LocationUtils.getCenterOf(loc, true);
         Player pl = offlinePlayer instanceof Player p ? p : null;
         if (pl != null && MESSAGES.getBoolean("death-message.enabled", false)) {
-            MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", loc.getWorld().getName(), "%x%", "" + loc.getBlockX(), "%y%", "" + loc.getBlockY(), "%z%", "" + loc.getBlockZ()));
+            MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", location.getWorld().getName(), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
         }
 
-        if (loc.getWorld().getEnvironment().equals(World.Environment.NETHER) || loc.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
-            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", 0)));
+        if (location.getWorld().getEnvironment().equals(World.Environment.NETHER) || location.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
+            location.setY(Math.max(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".min", 0)));
         } else {
-            loc.setY(Math.max(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".min", -64)));
+            location.setY(Math.max(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".min", -64)));
         }
-        loc.setY(Math.min(loc.getY(), CONFIG.getDouble("spawn-height-limits." + loc.getWorld().getName() + ".max", 319)));
+        location.setY(Math.min(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".max", 319)));
 
-        this.location = LocationUtils.getCenterOf(loc, true);
         this.player = offlinePlayer;
         this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
 
@@ -91,18 +91,7 @@ public class Grave {
             gui.addItem(it);
         }
 
-        int itemsAm = countItems();
-
-        int time = CONFIG.getInt("despawn-time-seconds", 180);
-        boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
-        boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
-        boolean empty = itemsAm == 0 && storedXP == 0;
-        if ((time != -1 && outOfTime) || (despawn && empty)) {
-            remove();
-            return;
-        }
-
-        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, CONFIG.getFloat("head-height", -1.2f), 0));
+        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, 1 + CONFIG.getFloat("head-height", -1.2f), 0));
         entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(offlinePlayer)));
         final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
         meta.small(true);
@@ -111,17 +100,18 @@ public class Grave {
         entity.spawn();
 
         if (CONFIG.getBoolean("rotate-head-360", true)) {
-            entity.location().setYaw(loc.getYaw());
+            entity.location().setYaw(location.getYaw());
             entity.teleport(entity.location());
         } else {
-            entity.location().setYaw(LocationUtils.getNearestDirection(loc.getYaw()));
+            entity.location().setYaw(LocationUtils.getNearestDirection(location.getYaw()));
             entity.teleport(entity.location());
         }
 
         entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-        hologram = new Hologram(location.clone().add(0, CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        hologram = new Hologram(location.clone().add(0, 1 + CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
 
+        int time = CONFIG.getInt("despawn-time-seconds", 180);
         hologram.addPlaceholder(new Placeholder((player1, string) -> {
             string = string.replace("%player%", playerName);
             string = string.replace("%xp%", "" + storedXP);
@@ -153,6 +143,7 @@ public class Grave {
             entity.teleport(entity.location());
         }
     }
+
     public void interact(@NotNull Player opener, org.bukkit.inventory.EquipmentSlot slot) {
         if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
             MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
