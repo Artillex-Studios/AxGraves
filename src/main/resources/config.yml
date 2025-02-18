@@ -72,6 +72,7 @@ auto-equip-armor: true
 # how many graves can a single player have at the same time?
 # if the limit is reached, the first grave will be removed
 # set to -1 to disable
+# you can override this by giving players the axgraves.limit.<amount> permissions
 grave-limit: -1
 
 # you can add any amount of worlds
@@ -117,4 +118,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 13
+version: 14

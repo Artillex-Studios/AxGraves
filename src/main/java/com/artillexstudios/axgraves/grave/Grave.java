@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -276,11 +275,8 @@ public class Grave {
 
     private void closeInventory() {
         final List<HumanEntity> viewers = new ArrayList<>(gui.getInventory().getViewers());
-        final Iterator<HumanEntity> viewerIterator = viewers.iterator();
-
-        while (viewerIterator.hasNext()) {
-            viewerIterator.next().closeInventory();
-            viewerIterator.remove();
+        for (HumanEntity viewer : viewers) {
+            viewer.closeInventory();
         }
     }
 

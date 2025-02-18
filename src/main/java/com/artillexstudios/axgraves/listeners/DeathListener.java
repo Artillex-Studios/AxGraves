@@ -24,7 +24,8 @@ public class DeathListener implements Listener {
         if (CONFIG.getStringList("disabled-worlds") != null && CONFIG.getStringList("disabled-worlds").contains(event.getEntity().getWorld().getName())) return;
         if (!CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) return;
 
-        final Player player = event.getEntity();
+        Player player = event.getEntity();
+        if (!player.hasPermission("axgraves.allowgraves")) return;
 
         if (player.getLastDamageCause() != null && CONFIG.getStringList("blacklisted-death-causes").contains(player.getLastDamageCause().getCause().name())) return;
         if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
