@@ -34,6 +34,7 @@ public class Utils {
 
     @Nullable
     public static ItemStack getBase64Skull(@NotNull String b64Texture) {
+        ItemStack fallbackHead = new ItemStack(Material.PLAYER_HEAD);
         try {
             JsonObject jsonObject = new Gson().fromJson(new String(Base64.getDecoder().decode(b64Texture)), JsonObject.class);
 
@@ -41,7 +42,7 @@ public class Utils {
                     || !jsonObject.getAsJsonObject("textures").has("SKIN")
                     || !jsonObject.getAsJsonObject("textures").getAsJsonObject("SKIN").has("url")) {
                 Bukkit.getLogger().log(Level.WARNING, "[AxGraves] Missing data in custom base64 skull texture when decoded-to JSON.");
-                return null;
+                return fallbackHead;
             }
 
             String urlString = jsonObject.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
@@ -61,17 +62,17 @@ public class Utils {
 
             // if we reach here, it the item meta is not SkullMeta for some reason
             Bukkit.getLogger().log(Level.WARNING, "[AxGraves] Failed to set custom skull texture.");
-            return null;
+            return fallbackHead;
 
         } catch (IllegalArgumentException e) {
             Bukkit.getLogger().log(Level.WARNING, "[AxGraves] Invalid Base64 custom skull texture string provided.", e);
-            return null;
+            return fallbackHead;
         } catch (JsonSyntaxException e) {
             Bukkit.getLogger().log(Level.WARNING, "[AxGraves] Invalid JSON in decoded custom skull texture data.", e);
-            return null;
+            return fallbackHead;
         } catch (Exception e) {
             Bukkit.getLogger().log(Level.SEVERE, "[AxGraves] An unexpected error occurred while creating custom texture skull.", e);
-            return null;
+            return fallbackHead;
         }
     }
 }
