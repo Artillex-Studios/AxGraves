@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
 import java.net.URL;
@@ -32,7 +31,7 @@ public class Utils {
     }
 
 
-    @Nullable
+    @NotNull
     public static ItemStack getBase64Skull(@NotNull String b64Texture) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         try {
