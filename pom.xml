@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxGraves</artifactId>
-    <version>1.19.3</version>
+    <version>1.19.4</version>
     <packaging>jar</packaging>
 
     <name>AxGraves</name>
@@ -50,10 +50,6 @@
                                 <relocation>
                                     <pattern>org.bstats</pattern>
                                     <shadedPattern>com.artillexstudios.axgraves.libs.bstats</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>dev.triumphteam.gui</pattern>
-                                    <shadedPattern>com.artillexstudios.axgraves.libs.gui</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.kyori.adventure</pattern>
@@ -114,12 +110,6 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>3.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.11</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

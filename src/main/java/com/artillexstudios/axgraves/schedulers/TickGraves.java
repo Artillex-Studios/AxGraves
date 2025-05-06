@@ -6,6 +6,7 @@ import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.entity.HumanEntity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,11 @@ public class TickGraves {
 
         Scheduler.get().runTimer(() -> {
             for (Grave grave : SpawnedGraves.getGraves()) {
-                for (HumanEntity viewer : new ArrayList<>(grave.getGui().getInventory().getViewers())) {
+                for (HumanEntity viewer : new ArrayList<>(grave.getGui().getViewers())) {
+                    if (!Objects.equals(viewer.getWorld(), grave.getLocation().getWorld())) {
+                        viewer.closeInventory();
+                        continue;
+                    }
                     if (viewer.getLocation().distanceSquared(grave.getLocation()) <= 49) continue;
                     viewer.closeInventory();
                 }

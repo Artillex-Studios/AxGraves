@@ -62,7 +62,7 @@ public class SpawnedGraves {
             final JsonObject obj = new JsonObject();
             obj.addProperty("location", Serializers.LOCATION.serialize(grave.getLocation()));
             obj.addProperty("owner", grave.getPlayer().getUniqueId().toString());
-            obj.addProperty("items", Base64.getEncoder().encodeToString(Serializers.ITEM_ARRAY.serialize(grave.getGui().getInventory().getContents())));
+            obj.addProperty("items", Base64.getEncoder().encodeToString(Serializers.ITEM_ARRAY.serialize(grave.getGui().getContents())));
             obj.addProperty("xp", grave.getStoredXP());
             obj.addProperty("date", grave.getSpawned());
 

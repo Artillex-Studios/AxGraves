@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public enum SubCommandTeleport {
@@ -18,6 +19,7 @@ public enum SubCommandTeleport {
 
         Optional<Grave> foundGrave = SpawnedGraves.getGraves().stream()
                 .filter(grave -> grave.getPlayer().getUniqueId().equals(sender.getUniqueId()))
+                .filter(grave -> Objects.equals(grave.getLocation().getWorld(), location.getWorld()))
                 .filter(grave -> grave.getLocation().distanceSquared(location) < 1)
                 .findAny();
 

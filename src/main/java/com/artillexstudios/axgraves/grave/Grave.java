@@ -19,8 +19,6 @@ import com.artillexstudios.axgraves.utils.ExperienceUtils;
 import com.artillexstudios.axgraves.utils.InventoryUtils;
 import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.Utils;
-import dev.triumphteam.gui.guis.Gui;
-import dev.triumphteam.gui.guis.StorageGui;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -31,6 +29,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +51,7 @@ public class Grave {
     private final Location location;
     private final OfflinePlayer player;
     private final String playerName;
-    private final StorageGui gui;
+    private final Inventory gui;
     private int storedXP;
     private final PacketEntity entity;
     private final Hologram hologram;
@@ -76,10 +75,11 @@ public class Grave {
         this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
 
         final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
-        this.gui = Gui.storage()
-                .title(StringUtils.format(MESSAGES.getString("gui-name").replace("%player%", playerName)))
-                .rows(items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9))
-                .create();
+        this.gui = Bukkit.createInventory(
+                null,
+                (items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
+                StringUtils.formatToString(MESSAGES.getString("gui-name").replace("%player%", playerName))
+        );
 
         this.storedXP = storedXP;
         this.spawned = date;
@@ -164,7 +164,7 @@ public class Grave {
             if (!CONFIG.getBoolean("enable-instant-pickup", true)) return;
             if (CONFIG.getBoolean("instant-pickup-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId())) return;
 
-            for (ItemStack it : gui.getInventory().getContents()) {
+            for (ItemStack it : gui.getContents()) {
                 if (it == null) continue;
 
                 if (CONFIG.getBoolean("auto-equip-armor", true)) {
@@ -210,7 +210,7 @@ public class Grave {
         Bukkit.getPluginManager().callEvent(graveOpenEvent);
         if (graveOpenEvent.isCancelled()) return;
 
-        gui.open(opener);
+        opener.openInventory(gui);
     }
 
     public void reload() {
@@ -228,7 +228,7 @@ public class Grave {
 
     public int countItems() {
         int am = 0;
-        for (ItemStack it : gui.getInventory().getContents()) {
+        for (ItemStack it : gui.getContents()) {
             if (it == null) continue;
             am++;
         }
@@ -261,7 +261,7 @@ public class Grave {
         closeInventory();
 
         if (CONFIG.getBoolean("drop-items", true)) {
-            for (ItemStack it : gui.getInventory().getContents()) {
+            for (ItemStack it : gui.getContents()) {
                 if (it == null) continue;
                 final Item item = location.getWorld().dropItem(location.clone(), it);
                 if (CONFIG.getBoolean("dropped-item-velocity", true)) continue;
@@ -275,7 +275,7 @@ public class Grave {
     }
 
     private void closeInventory() {
-        final List<HumanEntity> viewers = new ArrayList<>(gui.getInventory().getViewers());
+        final List<HumanEntity> viewers = new ArrayList<>(gui.getViewers());
         for (HumanEntity viewer : viewers) {
             viewer.closeInventory();
         }
@@ -293,7 +293,7 @@ public class Grave {
         return spawned;
     }
 
-    public StorageGui getGui() {
+    public Inventory getGui() {
         return gui;
     }
 
