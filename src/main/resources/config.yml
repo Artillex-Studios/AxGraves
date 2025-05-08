@@ -46,6 +46,12 @@ auto-rotation:
   enabled: false
   speed: 10.0
 
+# should the head use a custom base64 texture instead of the player's skin?:
+custom-skull: false
+
+# if custom-skull is true, this is the base64 value to set
+custom-skull-value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2Q5OGNmMzA2NmY3MmIyYjdmYjhlYTg3ZGI1MjVmNmYwYjUxNGZiOGIwZGRiMzc0OWZkMTIzYzAzZTAyNDFiNiJ9fX0="
+
 # true: only the person who died and people with axgraves.admin can open the grave
 # false: everyone can open the grave
 interact-only-own: false

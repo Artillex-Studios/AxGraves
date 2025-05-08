@@ -92,7 +92,13 @@ public class Grave {
         }
 
         entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, 1 + CONFIG.getFloat("head-height", -1.2f), 0));
-        entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(offlinePlayer)));
+        final ItemStack head;
+        if (CONFIG.getBoolean("custom-skull", false)) {
+            head = Utils.getBase64Skull(CONFIG.getString("custom-skull-value"));
+        } else {
+            head = Utils.getPlayerHead(offlinePlayer);
+        }
+        entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(head));
         final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
         meta.small(true);
         meta.invisible(true);
