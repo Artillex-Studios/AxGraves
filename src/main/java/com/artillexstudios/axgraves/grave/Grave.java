@@ -77,7 +77,7 @@ public class Grave {
         final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Bukkit.createInventory(
                 null,
-                (items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
+                Math.min(1, items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
                 StringUtils.formatToString(MESSAGES.getString("gui-name").replace("%player%", playerName))
         );
 
@@ -114,7 +114,7 @@ public class Grave {
         int time = CONFIG.getInt("despawn-time-seconds", 180);
         hologram.addPlaceholder(new Placeholder((player1, string) -> {
             string = string.replace("%player%", playerName);
-            string = string.replace("%xp%", "" + storedXP);
+            string = string.replace("%xp%", "" + getStoredXP());
             string = string.replace("%item%", "" + countItems());
             string = string.replace("%despawn-time%", StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
             return string;

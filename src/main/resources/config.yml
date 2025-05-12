@@ -75,6 +75,12 @@ auto-equip-armor: true
 # you can override this by giving players the axgraves.limit.<amount> permissions
 grave-limit: -1
 
+# by default every grave will use the player's skull
+# with this setting you can override it
+custom-grave-skull:
+  enabled: false
+  base64: ""
+
 # you can add any amount of worlds
 # if you don't define a world, the plugin will use the default world limits of the dimension
 spawn-height-limits:
@@ -118,4 +124,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 14
+version: 15
