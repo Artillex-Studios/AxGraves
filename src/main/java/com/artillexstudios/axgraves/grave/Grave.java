@@ -77,7 +77,7 @@ public class Grave {
         final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
         this.gui = Bukkit.createInventory(
                 null,
-                Math.min(1, items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
+                Math.max(1, items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
                 StringUtils.formatToString(MESSAGES.getString("gui-name").replace("%player%", playerName))
         );
 
