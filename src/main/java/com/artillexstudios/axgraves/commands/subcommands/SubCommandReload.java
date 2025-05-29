@@ -31,8 +31,8 @@ public enum SubCommandReload {
 
         EXECUTOR.execute(() -> {
             for (Grave grave : SpawnedGraves.getGraves()) {
-                grave.reload();
                 grave.update();
+                grave.updateHologram();
             }
         });
 

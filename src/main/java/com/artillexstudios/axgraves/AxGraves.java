@@ -40,8 +40,7 @@ public final class AxGraves extends AxPlugin {
     public void enable() {
         instance = this;
 
-        int pluginId = 20332;
-        new Metrics(this, pluginId);
+        new Metrics(this, 20332);
 
         CONFIG = new Config(new File(getDataFolder(), "config.yml"), getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
         MESSAGES = new Config(new File(getDataFolder(), "messages.yml"), getResource("messages.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
@@ -73,17 +72,14 @@ public final class AxGraves extends AxPlugin {
         SaveGraves.stop();
 
         for (Grave grave : SpawnedGraves.getGraves()) {
-            if (!CONFIG.getBoolean("save-graves.enabled", true))
-                grave.remove();
-
-            if (grave.getEntity() != null)
-                grave.getEntity().remove();
-            if (grave.getHologram() != null)
-                grave.getHologram().remove();
+            if (!CONFIG.getBoolean("save-graves.enabled", true)) grave.remove();
+            if (grave.getEntity() != null) grave.getEntity().remove();
+            if (grave.getHologram() != null) grave.getHologram().remove();
         }
 
-        if (CONFIG.getBoolean("save-graves.enabled", true))
+        if (CONFIG.getBoolean("save-graves.enabled", true)) {
             SpawnedGraves.saveToFile();
+        }
 
         EXECUTOR.shutdownNow();
     }

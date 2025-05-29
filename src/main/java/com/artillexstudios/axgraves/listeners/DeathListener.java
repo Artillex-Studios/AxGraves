@@ -15,6 +15,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
 public class DeathListener implements Listener {
@@ -30,33 +33,35 @@ public class DeathListener implements Listener {
         if (player.getLastDamageCause() != null && CONFIG.getStringList("blacklisted-death-causes").contains(player.getLastDamageCause().getCause().name())) return;
         if (player.getInventory().isEmpty() && player.getTotalExperience() == 0) return;
 
-        Grave grave = null;
-
         int xp = 0;
-        if (CONFIG.getBoolean("store-xp", true))
+        boolean storeXp = CONFIG.getBoolean("store-xp", true);
+        if (storeXp) {
             xp = Math.round(ExperienceUtils.getExp(player) * CONFIG.getFloat("xp-keep-percentage", 1f));
+        }
 
         Location location = player.getLocation();
         location.add(0, -0.5, 0);
+
+        List<ItemStack> drops = null;
         if (!event.getKeepInventory()) {
-            grave = new Grave(location, player, event.getDrops().toArray(new ItemStack[0]), xp, System.currentTimeMillis());
+            drops = event.getDrops();
         } else if (CONFIG.getBoolean("override-keep-inventory", true)) {
-            grave = new Grave(location, player, player.getInventory().getContents(), xp, System.currentTimeMillis());
-            if (CONFIG.getBoolean("store-xp", true)) {
+            drops = Arrays.asList(player.getInventory().getContents());
+            if (storeXp) {
                 player.setLevel(0);
                 player.setTotalExperience(0);
             }
             player.getInventory().clear();
         }
 
-        if (grave == null) return;
+        if (drops == null) return;
+        Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis());
 
         final GravePreSpawnEvent gravePreSpawnEvent = new GravePreSpawnEvent(player, grave);
         Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
         if (gravePreSpawnEvent.isCancelled()) return;
 
-        if (CONFIG.getBoolean("store-xp", true))
-            event.setDroppedExp(0);
+        if (storeXp) event.setDroppedExp(0);
         event.getDrops().clear();
 
         SpawnedGraves.addGrave(grave);

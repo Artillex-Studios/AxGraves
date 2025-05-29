@@ -6,14 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
 public class InventoryUtils {
 
     @NotNull
-    public static ItemStack[] reorderInventory(@NotNull PlayerInventory inventory, @NotNull ItemStack[] keptItems) {
-        final ArrayList<ItemStack> itemsBefore = new ArrayList<>(Arrays.asList(keptItems));
+    public static List<ItemStack> reorderInventory(@NotNull PlayerInventory inventory, @NotNull List<ItemStack> keptItems) {
+        final ArrayList<ItemStack> itemsBefore = new ArrayList<>(keptItems);
         final ItemStack[] items = new ItemStack[itemsBefore.size()];
         int n = 0;
 
@@ -48,6 +49,12 @@ public class InventoryUtils {
             n++;
         }
 
-        return items;
+        return Arrays.asList(items);
+    }
+
+    public static int getRequiredRows(int amount) {
+        int rows = amount / 9;
+        if (amount % 9 != 0) rows++;
+        return Math.max(rows, 1);
     }
 }

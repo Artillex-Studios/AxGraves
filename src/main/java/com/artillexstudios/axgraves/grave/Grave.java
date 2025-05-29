@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -35,11 +34,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
@@ -57,41 +54,37 @@ public class Grave {
     private final Hologram hologram;
     private boolean removed = false;
 
-    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull ItemStack[] itemsAr, int storedXP, long date) {
+    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
+        items.removeIf(it -> {
+            if (it == null) return true;
+            if (BlacklistUtils.isBlacklisted(it)) return true;
+            return false;
+        });
+        items.replaceAll(ItemStack::clone); // clone all items
+
         this.location = LocationUtils.getCenterOf(loc, true);
-        Player pl = offlinePlayer instanceof Player p ? p : null;
-        if (pl != null && MESSAGES.getBoolean("death-message.enabled", false)) {
-            MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", location.getWorld().getName(), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
-        }
-
-        if (location.getWorld().getEnvironment().equals(World.Environment.NETHER) || location.getWorld().getEnvironment().equals(World.Environment.THE_END)) {
-            location.setY(Math.max(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".min", 0)));
-        } else {
-            location.setY(Math.max(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".min", -64)));
-        }
-        location.setY(Math.min(location.getY(), CONFIG.getDouble("spawn-height-limits." + location.getWorld().getName() + ".max", 319)));
-
         this.player = offlinePlayer;
         this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
-
-        final ItemStack[] items = pl == null ? itemsAr : Arrays.stream(InventoryUtils.reorderInventory(pl.getInventory(), itemsAr)).filter(Objects::nonNull).toArray(ItemStack[]::new);
+        this.storedXP = storedXP;
+        this.spawned = date;
         this.gui = Bukkit.createInventory(
                 null,
-                Math.max(1, items.length % 9 == 0 ? items.length / 9 : 1 + (items.length / 9)) * 9,
+                InventoryUtils.getRequiredRows(items.size()) * 9,
                 StringUtils.formatToString(MESSAGES.getString("gui-name").replace("%player%", playerName))
         );
 
-        this.storedXP = storedXP;
-        this.spawned = date;
+        LocationUtils.clampLocation(location);
 
-        for (ItemStack it : items) {
-            if (it == null) continue;
-            if (BlacklistUtils.isBlacklisted(it)) continue;
-
-            gui.addItem(it);
+        Player pl = offlinePlayer.getPlayer();
+        if (pl != null) {
+            items = InventoryUtils.reorderInventory(pl.getInventory(), items);
+            if (MESSAGES.getBoolean("death-message.enabled", false)) {
+                MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", location.getWorld().getName(), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
+            }
         }
+        items.forEach(gui::addItem);
 
-        entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, 1 + CONFIG.getFloat("head-height", -1.2f), 0));
+        this.entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, 1 + CONFIG.getFloat("head-height", -1.2f), 0));
         entity.setItem(EquipmentSlot.HELMET, WrappedItemStack.wrap(Utils.getPlayerHead(offlinePlayer)));
         final ArmorStandMeta meta = (ArmorStandMeta) entity.meta();
         meta.small(true);
@@ -109,21 +102,23 @@ public class Grave {
 
         entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-        hologram = new Hologram(location.clone().add(0, 1 + CONFIG.getFloat("hologram-height", 1.2f), 0), Serializers.LOCATION.serialize(location), 0.3);
+        this.hologram = new Hologram(
+                location.clone().add(0, 1 + CONFIG.getFloat("hologram-height", 1.2f), 0),
+                Serializers.LOCATION.serialize(location),
+                0.3
+        );
 
         int time = CONFIG.getInt("despawn-time-seconds", 180);
         hologram.addPlaceholder(new Placeholder((player1, string) -> {
-            string = string.replace("%player%", playerName);
-            string = string.replace("%xp%", "" + getStoredXP());
-            string = string.replace("%item%", "" + countItems());
-            string = string.replace("%despawn-time%", StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
+            string = string.replace("%player%", playerName)
+                .replace("%xp%", "" + getStoredXP())
+                .replace("%item%", "" + countItems())
+                .replace("%despawn-time%", StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
             return string;
         }));
 
-        int ms = MESSAGES.getStringList("hologram").size();
-        for (int i = 0; i < ms; i++) {
-            hologram.addLine(StringUtils.formatToString(MESSAGES.getStringList("hologram").get(i)), HologramLine.Type.TEXT);
-        }
+        hologram.newPage();
+        updateHologram();
     }
 
     public void update() {
@@ -213,16 +208,10 @@ public class Grave {
         opener.openInventory(gui);
     }
 
-    public void reload() {
-        int ms = MESSAGES.getStringList("hologram").size();
-
-        for (int i = 0; i < ms; i++) {
-            final String msg = MESSAGES.getStringList("hologram").get(i);
-            if (i > hologram.page(0).lines().size() - 1) {
-                hologram.addLine(StringUtils.formatToString(msg), HologramLine.Type.TEXT);
-            } else {
-                hologram.setLine(i, StringUtils.formatToString(msg));
-            }
+    public void updateHologram() {
+        hologram.page(0).remove();
+        for (String line : StringUtils.formatListToString(MESSAGES.getStringList("hologram"))) {
+            hologram.addLine(line, HologramLine.Type.TEXT);
         }
     }
 
@@ -239,22 +228,16 @@ public class Grave {
         if (removed) return;
         removed = true;
 
-        if (Bukkit.isPrimaryThread()) {
-            removeNow();
-            return;
-        }
+        Runnable runnable = () -> {
+            SpawnedGraves.removeGrave(this);
+            removeInventory();
 
-        Scheduler.get().runAt(location, scheduledTask -> {
-            removeNow();
-        });
-    }
+            if (entity != null) entity.remove();
+            if (hologram != null) hologram.remove();
+        };
 
-    private void removeNow() {
-        SpawnedGraves.removeGrave(this);
-        removeInventory();
-
-        if (entity != null) entity.remove();
-        if (hologram != null) hologram.remove();
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Scheduler.get().runAt(location, runnable);
     }
 
     public void removeInventory() {
