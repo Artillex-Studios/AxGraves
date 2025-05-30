@@ -55,6 +55,7 @@ public class Grave {
     private boolean removed = false;
 
     public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
+        items = new ArrayList<>(items);
         items.removeIf(it -> {
             if (it == null) return true;
             if (BlacklistUtils.isBlacklisted(it)) return true;
