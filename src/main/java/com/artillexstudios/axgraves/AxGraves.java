@@ -84,9 +84,9 @@ public final class AxGraves extends AxPlugin {
         EXECUTOR.shutdownNow();
     }
 
-    public void updateFlags(FeatureFlags flags) {
-        flags.USE_LEGACY_HEX_FORMATTER.set(true);
-        flags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
-        flags.HOLOGRAM_UPDATE_TICKS.set(5L);
+    public void updateFlags() {
+        FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
+        FeatureFlags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
+        FeatureFlags.HOLOGRAM_UPDATE_TICKS.set(5L);
     }
 }
