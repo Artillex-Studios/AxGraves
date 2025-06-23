@@ -6,7 +6,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxGraves</artifactId>
-    <version>1.22.0</version>
+    <version>1.22.1</version>
     <packaging>jar</packaging>
 
     <name>AxGraves</name>
@@ -52,7 +52,7 @@
                                     <shadedPattern>com.artillexstudios.axgraves.libs.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>net.kyori.adventure</pattern>
+                                    <pattern>net.kyori</pattern>
                                     <shadedPattern>com.artillexstudios.axgraves.libs.kyori</shadedPattern>
                                 </relocation>
                                 <relocation>
