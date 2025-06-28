@@ -138,22 +138,6 @@ public class LocationUtils {
         return !currentBlock.getType().isSolid() && blockBelow.getType().isSolid();
     }
 
-    public static boolean isVoid(@NotNull Location location) {
-        World world = location.getWorld();
-        return world != null && location.getY() <= world.getMinHeight();
-    }
-
-    public static boolean isLava(@NotNull Location location) {
-        World world = location.getWorld();
-        if (world == null) return false;
-        
-        return world.getBlockAt(
-            location.getBlockX(),
-            location.getBlockY(),
-            location.getBlockZ()
-        ).getType() == Material.LAVA;
-    }
-
     public static boolean isInAir(@NotNull Location location) {
         World world = location.getWorld();
         if (world == null) return false;
@@ -200,6 +184,8 @@ public class LocationUtils {
                 
                 if (blockType == Material.LAVA) {
                     isDangerous = true; // lava
+                } else if (blockType.isSolid()) {
+                    isDangerous = true; // emmured in solid block
                 } else if (blockType == Material.AIR && isInAir(deathLocation)) {
                     isDangerous = true; // floating in air
                 }
