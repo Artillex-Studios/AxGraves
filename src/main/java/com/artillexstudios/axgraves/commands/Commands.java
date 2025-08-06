@@ -8,8 +8,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -40,7 +42,7 @@ public class Commands {
 
     @Subcommand("tp")
     @CommandPermission("axgraves.tp")
-    public void tp(@NotNull Player sender, World world, double x, double y, double z) {
+    public void tp(@NotNull Player sender, @Optional World world, @Optional Double x, @Optional Double y, @Optional Double z) {
         SubCommandTeleport.INSTANCE.subCommand(sender, world, x, y, z);
     }
 }

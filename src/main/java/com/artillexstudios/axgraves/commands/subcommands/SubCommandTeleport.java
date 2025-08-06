@@ -11,19 +11,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
+
 public enum SubCommandTeleport {
     INSTANCE;
 
-    public void subCommand(@NotNull Player sender, World world, double x, double y, double z) {
-        final Location location = new Location(world, x, y, z);
+    public void subCommand(@NotNull Player sender, World world, Double x, Double y, Double z) {
+        if (world == null || x == null || y == null || z == null) {
+            Grave grave = SpawnedGraves.getGraves().stream().filter(gr -> gr.getPlayer().getUniqueId().equals(sender.getUniqueId())).findAny().orElse(null);
+            if (grave == null) {
+                MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
+                return;
+            }
+            PaperUtils.teleportAsync(sender, grave.getLocation());
+            return;
+        }
 
-        Optional<Grave> foundGrave = SpawnedGraves.getGraves().stream()
-                .filter(grave -> grave.getPlayer().getUniqueId().equals(sender.getUniqueId()))
-                .filter(grave -> Objects.equals(grave.getLocation().getWorld(), location.getWorld()))
-                .filter(grave -> grave.getLocation().distanceSquared(location) < 1)
+        final Location location = new Location(world, x, y, z);
+        Optional<Grave> grave = SpawnedGraves.getGraves().stream()
+                .filter(gr -> gr.getPlayer().getUniqueId().equals(sender.getUniqueId()))
+                .filter(gr -> Objects.equals(gr.getLocation().getWorld(), location.getWorld()))
+                .filter(gr -> gr.getLocation().distanceSquared(location) < 1)
                 .findAny();
 
-        if (!sender.hasPermission("axgraves.tp.bypass") && foundGrave.isEmpty()) return;
-        PaperUtils.teleportAsync(sender, foundGrave.isEmpty() ? location : foundGrave.get().getLocation());
+        if (!sender.hasPermission("axgraves.tp.bypass") && grave.isEmpty()) return;
+        PaperUtils.teleportAsync(sender, grave.isEmpty() ? location : grave.get().getLocation());
     }
 }
