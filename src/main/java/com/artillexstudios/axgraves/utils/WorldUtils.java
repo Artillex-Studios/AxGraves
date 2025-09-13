@@ -42,27 +42,7 @@ public class WorldUtils {
      * @return true if the world name matches the pattern, false otherwise
      */
     private static boolean matchesPattern(String worldName, String pattern) {
-        // Handle exact match (backwards compatibility)
-        if (!pattern.contains("*")) {
-            return worldName.equals(pattern);
-        }
-
-        // Handle wildcard patterns
-        if (pattern.startsWith("*") && pattern.endsWith("*")) {
-            // *text* -> contains
-            String middle = pattern.substring(1, pattern.length() - 1);
-            return worldName.contains(middle);
-        } else if (pattern.startsWith("*")) {
-            // *text -> ends with
-            String suffix = pattern.substring(1);
-            return worldName.endsWith(suffix);
-        } else if (pattern.endsWith("*")) {
-            // text* -> starts with
-            String prefix = pattern.substring(0, pattern.length() - 1);
-            return worldName.startsWith(prefix);
-        }
-
-        // Fallback to exact match if pattern format is unexpected
-        return worldName.equals(pattern);
+        String regex = pattern.replace("*", ".*");
+        return worldName.matches(regex);
     }
 }
