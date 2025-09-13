@@ -5,6 +5,7 @@ import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
+import com.artillexstudios.axgraves.utils.WorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class DeathListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(@NotNull PlayerDeathEvent event) {
-        if (CONFIG.getStringList("disabled-worlds") != null && CONFIG.getStringList("disabled-worlds").contains(event.getEntity().getWorld().getName())) return;
+        if (WorldUtils.isWorldDisabled(event.getEntity().getWorld().getName(), CONFIG.getStringList("disabled-worlds"))) return;
         if (!CONFIG.getBoolean("override-keep-inventory", true) && event.getKeepInventory()) return;
 
         Player player = event.getEntity();
