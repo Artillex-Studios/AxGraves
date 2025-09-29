@@ -20,7 +20,7 @@ enable-instant-pickup: true
 instant-pickup-only-own: false
 
 # you should disable this if you want keep-inventory to work
-override-keep-inventory: true
+override-keep-inventory: false
 
 # how high should grave holograms spawn?
 # only applies to new graves

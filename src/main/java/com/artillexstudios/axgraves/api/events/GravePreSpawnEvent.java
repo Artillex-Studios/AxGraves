@@ -1,7 +1,7 @@
 package com.artillexstudios.axgraves.api.events;
 
-import com.artillexstudios.axgraves.grave.Grave;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 public class GravePreSpawnEvent extends Event implements Cancellable {
     private static final HandlerList handlerList = new HandlerList();
     private final Player player;
-    private final Grave grave;
+    private final Location location;
     private boolean isCancelled = false;
 
-    public GravePreSpawnEvent(@NotNull Player player, @NotNull Grave grave) {
+    public GravePreSpawnEvent(@NotNull Player player, @NotNull Location location) {
         super(!Bukkit.isPrimaryThread());
 
         this.player = player;
-        this.grave = grave;
+        this.location = location;
     }
 
     @NotNull
@@ -37,8 +37,8 @@ public class GravePreSpawnEvent extends Event implements Cancellable {
     }
 
     @NotNull
-    public Grave getGrave() {
-        return grave;
+    public Location getLocation() {
+        return location;
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
@@ -31,23 +32,25 @@ public enum SubCommandList {
 
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
         for (Grave grave : SpawnedGraves.getGraves()) {
-            if (!sender.hasPermission("axgraves.list.other") &&
-                    sender instanceof Player &&
-                    !grave.getPlayer().equals(sender)
-            ) continue;
+            // skip grave if player doesn't have permission to view others' graves
+            if (sender instanceof Player player && !grave.getPlayer().getUniqueId().equals(player.getUniqueId())) {
+                if (!sender.hasPermission("axgraves.list.other")) continue;
+            }
 
             final Location l = grave.getLocation();
 
-            final Map<String, String> map = Map.of("%player%", grave.getPlayerName(),
+            final Map<String, String> map = Map.of(
+                    "%player%", grave.getPlayerName(),
                     "%world%", l.getWorld().getName(),
                     "%x%", "" + l.getBlockX(),
                     "%y%", "" + l.getBlockY(),
                     "%z%", "" + l.getBlockZ(),
-                    "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned()));
+                    "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned())
+            );
 
             BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(MESSAGES.getString("grave-list.grave"), new HashMap<>(map)));
             for (BaseComponent component : text) {
-                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/axgraves tp %s %f %f %f", l.getWorld().getName(), l.getX(), l.getY(), l.getZ())));
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(Locale.ENGLISH, "/axgraves tp %s %f %f %f", l.getWorld().getName(), l.getX(), l.getY(), l.getZ())));
             }
             sender.spigot().sendMessage(text);
         }

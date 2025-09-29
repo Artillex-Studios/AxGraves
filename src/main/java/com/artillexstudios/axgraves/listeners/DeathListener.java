@@ -42,6 +42,10 @@ public class DeathListener implements Listener {
         Location location = player.getLocation();
         location.add(0, -0.5, 0);
 
+        final GravePreSpawnEvent gravePreSpawnEvent = new GravePreSpawnEvent(player, location);
+        Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
+        if (gravePreSpawnEvent.isCancelled()) return;
+
         List<ItemStack> drops = null;
         if (!event.getKeepInventory()) {
             drops = event.getDrops();
@@ -56,10 +60,6 @@ public class DeathListener implements Listener {
 
         if (drops == null) return;
         Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis());
-
-        final GravePreSpawnEvent gravePreSpawnEvent = new GravePreSpawnEvent(player, grave);
-        Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
-        if (gravePreSpawnEvent.isCancelled()) return;
 
         if (storeXp) event.setDroppedExp(0);
         event.getDrops().clear();
