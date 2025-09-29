@@ -42,7 +42,7 @@ public class SpawnedGraves {
                 num++;
             }
 
-            if (num >= graveLimit) oldest.remove();
+            if (num >= graveLimit) oldest.remove(true);
         }
 
         graves.add(grave);
