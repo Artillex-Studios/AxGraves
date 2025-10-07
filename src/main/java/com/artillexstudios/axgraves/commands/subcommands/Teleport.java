@@ -6,17 +6,16 @@ import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
-public enum SubCommandTeleport {
+public enum Teleport {
     INSTANCE;
 
-    public void subCommand(@NotNull Player sender, World world, Double x, Double y, Double z) {
+    public void execute(Player sender, World world, Double x, Double y, Double z) {
         if (world == null || x == null || y == null || z == null) {
             Grave grave = SpawnedGraves.getGraves().stream().filter(gr -> gr.getPlayer().getUniqueId().equals(sender.getUniqueId())).findAny().orElse(null);
             if (grave == null) {

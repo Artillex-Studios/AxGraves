@@ -9,7 +9,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -19,10 +18,10 @@ import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
-public enum SubCommandList {
+public enum List {
     INSTANCE;
 
-    public void subCommand(@NotNull CommandSender sender) {
+    public void execute(CommandSender sender) {
         if (SpawnedGraves.getGraves().isEmpty()) {
             MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
             return;

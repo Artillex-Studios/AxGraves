@@ -1,4 +1,4 @@
-prefix: "&#FF00FF&lAxGraves &7» "
+prefix: "<gradient:#FF00FF:#DD00FF><b>AxGraves</b></gradient> &7» "
 
 # how fast should the graves disappear
 # set to -1 to make graves last until the next server restart
@@ -24,7 +24,7 @@ override-keep-inventory: false
 
 # how high should grave holograms spawn?
 # only applies to new graves
-hologram-height: 0.75
+hologram-height: 0.5
 
 # how high should the player head be?
 # in some versions on some clients may see the heads glitched in the ground
@@ -116,6 +116,18 @@ blacklisted-items:
     material: "barrier"
     name-contains: "Banned item's name"
 
+# settings for holograms displays
+holograms:
+  # set to 00000000 to make it invisible
+  # format (hexadecimal): AARRGGBB
+  background-color: 00000000
+  # list: left, right, center
+  alignment: center
+  # list: fixed, vertical, horizontal, center
+  billboard: vertical
+  # should blocks/entities be visible behind the displays?
+  see-through: false
+
 # should be plugin notify you if there is a new update?
 update-notifier:
   # if enabled, it will display the message in the console
@@ -124,4 +136,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 15
+version: 16

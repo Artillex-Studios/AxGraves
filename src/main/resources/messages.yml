@@ -5,9 +5,10 @@ hologram:
 
 help:
   - " "
-  - "&#FF00FF&lAxGraves &7» "
-  - " &7- &f/axgraves reload &7| &#FF00FFReload plugin"
-  - " &7- &f/axgraves list &7| &#FF00FFList spawned graves"
+  - "<gradient:#FF00FF:#DD00FF><b>AxGraves</b></gradient> <#FF55FF>Help"
+  - " <#FF55FF>➤ <white>/axgraves reload <#DDDDDD>| <#FFAAFF>Reload plugin"
+  - " <#FF55FF>➤ <white>/axgraves list <#DDDDDD>| <#FFAAFF>List spawned graves"
+  - " <#FF55FF>➤ <white>/axgraves tp <#DDDDDD>| <#FFAAFF>Teleport to last grave"
   - " "
 
 gui-name: "&0%player%'s Grave"

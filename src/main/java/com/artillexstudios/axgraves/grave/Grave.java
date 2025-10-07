@@ -1,17 +1,20 @@
 package com.artillexstudios.axgraves.grave;
 
 import com.artillexstudios.axapi.hologram.Hologram;
-import com.artillexstudios.axapi.hologram.HologramLine;
+import com.artillexstudios.axapi.hologram.HologramType;
+import com.artillexstudios.axapi.hologram.HologramTypes;
+import com.artillexstudios.axapi.hologram.page.HologramPage;
 import com.artillexstudios.axapi.items.WrappedItemStack;
+import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.packet.wrapper.serverbound.ServerboundInteractWrapper;
 import com.artillexstudios.axapi.packetentity.PacketEntity;
 import com.artillexstudios.axapi.packetentity.meta.entity.ArmorStandMeta;
+import com.artillexstudios.axapi.packetentity.meta.entity.DisplayMeta;
+import com.artillexstudios.axapi.packetentity.meta.entity.TextDisplayMeta;
 import com.artillexstudios.axapi.scheduler.Scheduler;
-import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.EquipmentSlot;
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axapi.utils.placeholder.Placeholder;
 import com.artillexstudios.axgraves.api.events.GraveInteractEvent;
 import com.artillexstudios.axgraves.api.events.GraveOpenEvent;
 import com.artillexstudios.axgraves.utils.BlacklistUtils;
@@ -51,7 +54,7 @@ public class Grave {
     private final Inventory gui;
     private int storedXP;
     private final PacketEntity entity;
-    private final Hologram hologram;
+    private Hologram hologram;
     private boolean removed = false;
 
     public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
@@ -64,6 +67,7 @@ public class Grave {
         items.replaceAll(ItemStack::clone); // clone all items
 
         this.location = LocationUtils.getCenterOf(loc, true);
+        location.setPitch(0);
         this.player = offlinePlayer;
         this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
         this.storedXP = storedXP;
@@ -103,22 +107,6 @@ public class Grave {
 
         entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
 
-        this.hologram = new Hologram(
-                location.clone().add(0, 1 + CONFIG.getFloat("hologram-height", 1.2f), 0),
-                Serializers.LOCATION.serialize(location),
-                0.3
-        );
-
-        int time = CONFIG.getInt("despawn-time-seconds", 180);
-        hologram.addPlaceholder(new Placeholder((player1, string) -> {
-            string = string.replace("%player%", playerName)
-                .replace("%xp%", "" + getStoredXP())
-                .replace("%item%", "" + countItems())
-                .replace("%despawn-time%", StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned));
-            return string;
-        }));
-
-        hologram.newPage();
         updateHologram();
     }
 
@@ -210,10 +198,32 @@ public class Grave {
     }
 
     public void updateHologram() {
-        hologram.page(0).remove();
-        for (String line : StringUtils.formatListToString(MESSAGES.getStringList("hologram"))) {
-            hologram.addLine(line, HologramLine.Type.TEXT);
-        }
+        if (hologram != null) hologram.remove();
+
+        List<String> lines = MESSAGES.getStringList("hologram");
+
+        double hologramHeight = CONFIG.getFloat("hologram-height", 0.75f) + 1;
+        hologram = new Hologram(location.clone().add(0, getNewHeight(hologramHeight, lines.size(), 0.3f), 0));
+
+        HologramPage<String, HologramType<String>> page = hologram.createPage(HologramTypes.TEXT);
+        page.getParameters().withParameter(Grave.class, this);
+
+        Section section = CONFIG.getSection("holograms");
+        page.setEntityMetaHandler(m -> {
+            TextDisplayMeta meta = (TextDisplayMeta) m;
+            meta.seeThrough(section.getBoolean("see-through"));
+            meta.alignment(TextDisplayMeta.Alignment.valueOf(section.getString("alignment").toUpperCase()));
+            meta.backgroundColor(Integer.parseInt(section.getString("background-color"), 16));
+            meta.lineWidth(1000);
+            meta.billboardConstrain(DisplayMeta.BillboardConstrain.valueOf(section.getString("billboard").toUpperCase()));
+        });
+
+        page.setContent(String.join("<reset><br>", lines));
+        page.spawn();
+    }
+
+    private static double getNewHeight(double y, int lines, float lineHeight) {
+        return y - lineHeight * (lines - 1) + 0.25;
     }
 
     public int countItems() {

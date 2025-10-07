@@ -12,6 +12,7 @@ import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
 import com.artillexstudios.axgraves.commands.Commands;
 import com.artillexstudios.axgraves.grave.Grave;
+import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
@@ -50,11 +51,14 @@ public final class AxGraves extends AxPlugin {
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
-        final BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
+        BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
         handler.register(new Commands());
 
-        if (CONFIG.getBoolean("save-graves.enabled", true))
+        GravePlaceholders.register();
+
+        if (CONFIG.getBoolean("save-graves.enabled", true)) {
             SpawnedGraves.loadFromFile();
+        }
 
         TickGraves.start();
         SaveGraves.start();
@@ -88,5 +92,6 @@ public final class AxGraves extends AxPlugin {
         FeatureFlags.USE_LEGACY_HEX_FORMATTER.set(true);
         FeatureFlags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
         FeatureFlags.HOLOGRAM_UPDATE_TICKS.set(5L);
+        FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
     }
 }
