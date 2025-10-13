@@ -25,7 +25,9 @@ import com.artillexstudios.axgraves.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -152,25 +154,25 @@ public class Grave {
                 if (it == null) continue;
 
                 if (CONFIG.getBoolean("auto-equip-armor", true)) {
-                    if (it.getType().toString().endsWith("_HELMET") && opener.getInventory().getHelmet() == null) {
+                    if ((EnchantmentTarget.ARMOR_HEAD.includes(it) || it.getType().equals(Material.TURTLE_HELMET)) && opener.getInventory().getHelmet() == null) {
                         opener.getInventory().setHelmet(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_CHESTPLATE") && opener.getInventory().getChestplate() == null) {
+                    if ((EnchantmentTarget.ARMOR_TORSO.includes(it) || it.getType().equals(Material.ELYTRA)) && opener.getInventory().getChestplate() == null) {
                         opener.getInventory().setChestplate(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_LEGGINGS") && opener.getInventory().getLeggings() == null) {
+                    if (EnchantmentTarget.ARMOR_LEGS.includes(it) && opener.getInventory().getLeggings() == null) {
                         opener.getInventory().setLeggings(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (it.getType().toString().endsWith("_BOOTS") && opener.getInventory().getBoots() == null) {
+                    if (EnchantmentTarget.ARMOR_FEET.includes(it) && opener.getInventory().getBoots() == null) {
                         opener.getInventory().setBoots(it);
                         it.setAmount(0);
                         continue;
