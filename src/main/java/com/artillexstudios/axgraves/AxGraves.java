@@ -16,8 +16,10 @@ import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.listeners.PlayerInteractListener;
+import com.artillexstudios.axgraves.listeners.PlayerMoveListener;
 import com.artillexstudios.axgraves.schedulers.SaveGraves;
 import com.artillexstudios.axgraves.schedulers.TickGraves;
+import com.artillexstudios.axgraves.utils.LocationUtils;
 import com.artillexstudios.axgraves.utils.UpdateNotifier;
 import org.bstats.bukkit.Metrics;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
@@ -50,6 +52,7 @@ public final class AxGraves extends AxPlugin {
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
 
         BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
         handler.register(new Commands());
@@ -84,6 +87,8 @@ public final class AxGraves extends AxPlugin {
         if (CONFIG.getBoolean("save-graves.enabled", true)) {
             SpawnedGraves.saveToFile();
         }
+
+        LocationUtils.clearAllLastSolidLocations();
 
         EXECUTOR.shutdownNow();
     }
