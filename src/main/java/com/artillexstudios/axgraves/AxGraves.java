@@ -10,7 +10,7 @@ import com.artillexstudios.axapi.libs.boostedyaml.settings.updater.UpdaterSettin
 import com.artillexstudios.axapi.metrics.AxMetrics;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
-import com.artillexstudios.axgraves.commands.Commands;
+import com.artillexstudios.axgraves.commands.CommandManager;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
@@ -20,7 +20,6 @@ import com.artillexstudios.axgraves.schedulers.SaveGraves;
 import com.artillexstudios.axgraves.schedulers.TickGraves;
 import com.artillexstudios.axgraves.utils.UpdateNotifier;
 import org.bstats.bukkit.Metrics;
-import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -29,7 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public final class AxGraves extends AxPlugin {
     private static AxPlugin instance;
     public static Config CONFIG;
-    public static Config MESSAGES;
+    public static Config LANG;
     public static MessageUtils MESSAGEUTILS;
     public static ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static AxMetrics metrics;
@@ -44,15 +43,14 @@ public final class AxGraves extends AxPlugin {
         new Metrics(this, 20332);
 
         CONFIG = new Config(new File(getDataFolder(), "config.yml"), getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
-        MESSAGES = new Config(new File(getDataFolder(), "messages.yml"), getResource("messages.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
+        LANG = new Config(new File(getDataFolder(), "messages.yml"), getResource("messages.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
 
-        MESSAGEUTILS = new MessageUtils(MESSAGES.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
+        MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
-        BukkitCommandHandler handler = BukkitCommandHandler.create(instance);
-        handler.register(new Commands());
+        CommandManager.load();
 
         GravePlaceholders.register();
 

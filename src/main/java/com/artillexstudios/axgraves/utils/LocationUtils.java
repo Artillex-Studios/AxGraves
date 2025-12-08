@@ -10,12 +10,10 @@ import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 public class LocationUtils {
 
     @NotNull
-    public static Location getCenterOf(@NotNull Location location, boolean keepPitchYaw) {
-        final Location loc = location.getBlock().getLocation().add(0.5, 0.5, 0.5);
-        if (keepPitchYaw) {
-            loc.setPitch(location.getPitch());
-            loc.setYaw(location.getYaw());
-        }
+    public static Location getCenterOf(@NotNull Location location, boolean keepYaw, boolean keepPitch) {
+        Location loc = location.getBlock().getLocation().add(0.5, 0.5, 0.5);
+        if (keepYaw) loc.setYaw(location.getYaw());
+        if (keepPitch) loc.setPitch(location.getPitch());
         return loc;
     }
 
@@ -42,5 +40,11 @@ public class LocationUtils {
             }
         }
         location.setY(Math.clamp(location.getY(), min, max));
+    }
+
+    @NotNull
+    public static String getWorldName(World world) {
+        if (world == null) return "---";
+        return CONFIG.getString("world-name." + world.getName(), world.getName());
     }
 }

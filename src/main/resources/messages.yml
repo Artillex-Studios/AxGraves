@@ -32,7 +32,17 @@ grave-list:
   grave: "&#FF00FF[TP] &#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"
   no-graves: "&#FFAAFFNo grave found!"
 
+commands:
+  invalid-value: "&#FF0000Invalid parameter: &#BB0000%value%"
+  invalid-command: "&#FF0000Invalid command or subcommand!"
+  missing-argument: "&#FF0000Missing argument! You must specify a value for &#BB0000%value%&#FF0000."
+  no-permission: "&#FF0000You don't have permission to access this command!"
+  out-of-range: "&#FF0000The &#BB0000%number% &#FF0000must be between &#BB0000%min% &#FF0000and &#BB0000%max%&#FF0000!"
+  player-only: "&#FF0000You must be a player to use this command!"
+  invalid-player: "&#FF0000The player &#BB0000%player% &#FF0000can not be found!"
+  invalid-selector: "&#FF0000You can not use this selector in this command!"
+
 update-notifier: "&#FF88FFThere is a new version of AxGraves available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 
 # do not edit
-version: 5
+version: 6

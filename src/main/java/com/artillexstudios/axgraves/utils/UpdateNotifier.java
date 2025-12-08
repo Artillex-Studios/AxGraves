@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.HashMap;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.LANG;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class UpdateNotifier implements Listener {
@@ -62,7 +62,7 @@ public class UpdateNotifier implements Listener {
         HashMap<String, String> map = new HashMap<>();
         map.put("%current%", current);
         map.put("%latest%", latest);
-        return StringUtils.formatToString(CONFIG.getString("prefix") + MESSAGES.getString("update-notifier"), map);
+        return StringUtils.formatToString(CONFIG.getString("prefix") + LANG.getString("update-notifier"), map);
     }
 
     @Nullable

@@ -3,6 +3,7 @@ package com.artillexstudios.axgraves.commands.subcommands;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.utils.LocationUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -15,7 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.LANG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
 public enum List {
@@ -27,7 +28,7 @@ public enum List {
             return;
         }
 
-        MESSAGEUTILS.sendFormatted(sender, MESSAGES.getString("grave-list.header"));
+        MESSAGEUTILS.sendFormatted(sender, LANG.getString("grave-list.header"));
 
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
         for (Grave grave : SpawnedGraves.getGraves()) {
@@ -40,14 +41,14 @@ public enum List {
 
             final Map<String, String> map = Map.of(
                     "%player%", grave.getPlayerName(),
-                    "%world%", l.getWorld().getName(),
+                    "%world%", LocationUtils.getWorldName(l.getWorld()),
                     "%x%", "" + l.getBlockX(),
                     "%y%", "" + l.getBlockY(),
                     "%z%", "" + l.getBlockZ(),
                     "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned())
             );
 
-            BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(MESSAGES.getString("grave-list.grave"), new HashMap<>(map)));
+            BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(LANG.getString("grave-list.grave"), new HashMap<>(map)));
             for (BaseComponent component : text) {
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(Locale.ENGLISH, "/axgraves tp %s %f %f %f", l.getWorld().getName(), l.getX(), l.getY(), l.getZ())));
             }

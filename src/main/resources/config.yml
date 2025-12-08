@@ -94,6 +94,22 @@ spawn-height-limits:
     min: 0
     max: 319
 
+# you must define at least 1
+# requires a restart to update
+command-aliases:
+  - "axgraves"
+  - "axgrave"
+  - "graves"
+  - "grave"
+
+# used for the %world% placeholder
+# if a world isn't defined here, it will default to the original name of the world
+# note: world names are case-sensitive
+world-name:
+  world: "Overworld"
+  world_nether: "The Nether"
+  world_the_end: "The End"
+
 # if players die from any of the following, no graves will be spawned
 # list of valid values: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
 # case sensitive
@@ -136,4 +152,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 16
+version: 17

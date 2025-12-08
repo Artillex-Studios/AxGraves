@@ -13,9 +13,9 @@ import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+import revxrsal.commands.orphan.OrphanCommand;
 
-@Command({"axgraves", "axgrave", "grave", "graves"})
-public class Commands {
+public class Commands implements OrphanCommand {
 
     @DefaultFor({"~", "~ help"})
     @CommandPermission("axgraves.help")

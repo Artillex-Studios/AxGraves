@@ -22,7 +22,7 @@ public enum Teleport {
                 MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
                 return;
             }
-            PaperUtils.teleportAsync(sender, grave.getLocation());
+            PaperUtils.teleportAsync(sender, grave.getLocation().clone().add(0, 0.5, 0));
             return;
         }
 
@@ -34,6 +34,6 @@ public enum Teleport {
                 .findAny();
 
         if (!sender.hasPermission("axgraves.tp.bypass") && grave.isEmpty()) return;
-        PaperUtils.teleportAsync(sender, grave.isEmpty() ? location : grave.get().getLocation());
+        PaperUtils.teleportAsync(sender, grave.map(value -> value.getLocation().clone().add(0, 0.5, 0)).orElse(location));
     }
 }

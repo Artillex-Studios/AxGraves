@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
-import static com.artillexstudios.axgraves.AxGraves.MESSAGES;
+import static com.artillexstudios.axgraves.AxGraves.LANG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
 public class Grave {
@@ -68,25 +68,27 @@ public class Grave {
         });
         items.replaceAll(ItemStack::clone); // clone all items
 
-        this.location = LocationUtils.getCenterOf(loc, true);
-        location.setPitch(0);
+        System.out.println(loc);
+        this.location = LocationUtils.getCenterOf(loc, true, false);
+        System.out.println(location);
         this.player = offlinePlayer;
-        this.playerName = offlinePlayer.getName() == null ? MESSAGES.getString("unknown-player", "???") : offlinePlayer.getName();
+        this.playerName = offlinePlayer.getName() == null ? LANG.getString("unknown-player", "???") : offlinePlayer.getName();
         this.storedXP = storedXP;
         this.spawned = date;
         this.gui = Bukkit.createInventory(
                 null,
                 InventoryUtils.getRequiredRows(items.size()) * 9,
-                StringUtils.formatToString(MESSAGES.getString("gui-name").replace("%player%", playerName))
+                StringUtils.formatToString(LANG.getString("gui-name").replace("%player%", playerName))
         );
 
         LocationUtils.clampLocation(location);
+        System.out.println(location);
 
         Player pl = offlinePlayer.getPlayer();
         if (pl != null) {
             items = InventoryUtils.reorderInventory(pl.getInventory(), items);
-            if (MESSAGES.getBoolean("death-message.enabled", false)) {
-                MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", location.getWorld().getName(), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
+            if (LANG.getBoolean("death-message.enabled", false)) {
+                MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", LocationUtils.getWorldName(location.getWorld()), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
             }
         }
         items.forEach(gui::addItem);
@@ -202,7 +204,7 @@ public class Grave {
     public void updateHologram() {
         if (hologram != null) hologram.remove();
 
-        List<String> lines = MESSAGES.getStringList("hologram");
+        List<String> lines = LANG.getStringList("hologram");
 
         double hologramHeight = CONFIG.getFloat("hologram-height", 0.75f) + 1;
         hologram = new Hologram(location.clone().add(0, getNewHeight(hologramHeight, lines.size(), 0.3f), 0));
