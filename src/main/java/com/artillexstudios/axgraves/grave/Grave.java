@@ -68,9 +68,7 @@ public class Grave {
         });
         items.replaceAll(ItemStack::clone); // clone all items
 
-        System.out.println(loc);
         this.location = LocationUtils.getCenterOf(loc, true, false);
-        System.out.println(location);
         this.player = offlinePlayer;
         this.playerName = offlinePlayer.getName() == null ? LANG.getString("unknown-player", "???") : offlinePlayer.getName();
         this.storedXP = storedXP;
@@ -82,7 +80,6 @@ public class Grave {
         );
 
         LocationUtils.clampLocation(location);
-        System.out.println(location);
 
         Player pl = offlinePlayer.getPlayer();
         if (pl != null) {
