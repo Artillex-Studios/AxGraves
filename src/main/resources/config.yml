@@ -34,8 +34,15 @@ head-height: -1.2
 
 # worlds where graves won't spawn
 # this is case-sensitive
+# supports wildcard patterns:
+# - "world_name" -> exact match
+# - "em_dungeon_*" -> matches any world starting with "em_dungeon_"
+# - "*_arena" -> matches any world ending with "_arena"
+# - "*pvp*" -> matches any world containing "pvp"
 disabled-worlds:
   - "blacklisted_world"
+  - "em_dungeon_*"
+  - "*_arena"
 
 # true: the head can face in all the 360 degrees
 # false: the head can face in only 4 directions (north, east, south, west)
