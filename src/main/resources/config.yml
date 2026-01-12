@@ -151,5 +151,7 @@ update-notifier:
   # if enabled, it will broadcast the update message to all players who have the <plugin-name>.update-notify permission
   on-join: true
 
+block-protection-distance-from-grave: 5
+
 # do not edit
 version: 17

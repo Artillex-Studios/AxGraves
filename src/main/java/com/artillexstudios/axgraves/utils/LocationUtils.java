@@ -1,9 +1,13 @@
 package com.artillexstudios.axgraves.utils;
 
 import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
+import com.artillexstudios.axgraves.grave.Grave;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
@@ -46,5 +50,16 @@ public class LocationUtils {
     public static String getWorldName(World world) {
         if (world == null) return "---";
         return CONFIG.getString("world-name." + world.getName(), world.getName());
+    }
+
+
+    public static boolean isWithinDistanceToGrave(ConcurrentLinkedQueue<Grave> graves, Location location, int distance){
+
+        for(Grave grave : graves){
+            if(grave.getLocation().distance(location) < distance){
+                return true;
+            }
+        }
+        return false;
     }
 }
