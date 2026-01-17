@@ -1,7 +1,6 @@
 package com.artillexstudios.axgraves.api.events;
 
 import com.artillexstudios.axgraves.grave.Grave;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -15,7 +14,7 @@ public class GraveInteractEvent extends Event implements Cancellable {
     private boolean isCancelled = false;
 
     public GraveInteractEvent(@NotNull Player opener, @NotNull Grave grave) {
-        super(!Bukkit.isPrimaryThread());
+        super(false);
 
         this.opener = opener;
         this.grave = grave;
