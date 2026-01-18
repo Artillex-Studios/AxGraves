@@ -13,7 +13,7 @@ public class GraveSpawnEvent extends Event {
     private final Grave grave;
 
     public GraveSpawnEvent(@NotNull Player player, @NotNull Grave grave) {
-        super(!Bukkit.isPrimaryThread());
+        super(false);
 
         this.player = player;
         this.grave = grave;

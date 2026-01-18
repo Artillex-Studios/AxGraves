@@ -22,13 +22,16 @@ public class LocationUtils {
     }
 
     public static void clampLocation(Location location) {
-        Section section = CONFIG.getSection("spawn-height-limits." + location.getWorld().getName());
+        World world = location.getWorld();
+        if (world == null) return;
+
+        Section section = CONFIG.getSection("spawn-height-limits." + world.getName());
         double min, max;
         if (section != null) {
             min = section.getDouble("min");
             max = section.getDouble("max");
         } else {
-            switch (location.getWorld().getEnvironment()) {
+            switch (world.getEnvironment()) {
                 case NETHER, THE_END -> {
                     min = 0;
                     max = 255;
