@@ -248,7 +248,7 @@ public class Grave {
             if (hologram != null) hologram.remove();
         };
 
-        if (Bukkit.isPrimaryThread()) runnable.run();
+        if (Scheduler.get().isOwnedByCurrentRegion(location)) runnable.run();
         else Scheduler.get().runAt(location, runnable);
     }
 

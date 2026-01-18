@@ -23,13 +23,7 @@ public enum List {
     INSTANCE;
 
     public void execute(CommandSender sender) {
-        if (SpawnedGraves.getGraves().isEmpty()) {
-            MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
-            return;
-        }
-
-        MESSAGEUTILS.sendFormatted(sender, LANG.getString("grave-list.header"));
-
+        boolean found = false;
         int dTime = CONFIG.getInt("despawn-time-seconds", 180);
         for (Grave grave : SpawnedGraves.getGraves()) {
             // skip grave if player doesn't have permission to view others' graves
@@ -48,11 +42,20 @@ public enum List {
                     "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned())
             );
 
+            if (!found) {
+                MESSAGEUTILS.sendFormatted(sender, LANG.getString("grave-list.header"));
+                found = true;
+            }
+
             BaseComponent[] text = TextComponent.fromLegacyText(StringUtils.formatToString(LANG.getString("grave-list.grave"), new HashMap<>(map)));
             for (BaseComponent component : text) {
                 component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format(Locale.ENGLISH, "/axgraves tp %s %f %f %f", l.getWorld().getName(), l.getX(), l.getY(), l.getZ())));
             }
             sender.spigot().sendMessage(text);
+        }
+
+        if (!found) {
+            MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
         }
     }
 }
