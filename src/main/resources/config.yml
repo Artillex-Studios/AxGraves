@@ -32,11 +32,6 @@ hologram-height: 0.5
 # only applies to new graves
 head-height: -1.2
 
-# worlds where graves won't spawn
-# this is case-sensitive
-disabled-worlds:
-  - "blacklisted_world"
-
 # true: the head can face in all the 360 degrees
 # false: the head can face in only 4 directions (north, east, south, west)
 rotate-head-360: true
@@ -75,6 +70,16 @@ auto-equip-armor: true
 # you can override this by giving players the axgraves.limit.<amount> permissions
 grave-limit: -1
 
+# should the grave disappear when all items get taken out of it?
+despawn-when-empty: true
+
+save-graves:
+  # should graves be saved if the server stops?
+  enabled: true
+  # how often should the graves be saved?
+  # set to -1 to make it only save on shutdown (it might not save if there is a crash)
+  auto-save-seconds: 30
+
 # by default every grave will use the player's skull
 # with this setting you can override it
 custom-grave-skull:
@@ -110,21 +115,16 @@ world-name:
   world_nether: "The Nether"
   world_the_end: "The End"
 
+# worlds where graves won't spawn
+# this is case-sensitive
+disabled-worlds:
+  - "blacklisted_world"
+
 # if players die from any of the following, no graves will be spawned
 # list of valid values: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
 # case sensitive
 blacklisted-death-causes:
   - "EXAMPLE_DEATH_CAUSE"
-
-# should the grave disappear when all items get taken out of it?
-despawn-when-empty: true
-
-save-graves:
-  # should graves be saved if the server stops?
-  enabled: true
-  # how often should the graves be saved?
-  # set to -1 to make it only save on shutdown (it might not save if there is a crash)
-  auto-save-seconds: 30
 
 # items that will be removed on death and will not show up in graves
 blacklisted-items:

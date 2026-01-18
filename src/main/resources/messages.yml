@@ -30,7 +30,7 @@ death-message:
 grave-list:
   header: "&#FF00FF&l=== GRAVES ==="
   grave: "&#FF00FF[TP] &#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"
-  no-graves: "&#FFAAFFNo grave found!"
+  no-graves: "&#FFAAFFNo graves found!"
 
 commands:
   invalid-value: "&#FF0000Invalid parameter: &#BB0000%value%"
