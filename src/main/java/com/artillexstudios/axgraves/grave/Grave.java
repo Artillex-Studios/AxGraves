@@ -199,7 +199,7 @@ public class Grave {
         Bukkit.getPluginManager().callEvent(graveOpenEvent);
         if (graveOpenEvent.isCancelled()) return;
 
-        opener.openInventory(gui);
+        Scheduler.get().run(opener, task -> opener.openInventory(gui), null);
     }
 
     public void updateHologram() {

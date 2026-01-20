@@ -27,7 +27,7 @@ public class PlayerInteractListener implements Listener {
         Block clickedBlock = event.getClickedBlock();
         for (Grave grave : SpawnedGraves.getGraves()) {
             if (grave.getLocation().getBlock().equals(clickedBlock)) {
-                Scheduler.get().run(event.getPlayer(), task -> grave.interact(event.getPlayer(), hand), null);
+                Scheduler.get().runAt(clickedBlock.getLocation(), task -> grave.interact(event.getPlayer(), hand));
                 return;
             }
         }
