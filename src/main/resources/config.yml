@@ -19,8 +19,12 @@ enable-instant-pickup: true
 # this makes it that only the owner of the grave will be able to instantly pick it up
 instant-pickup-only-own: false
 
-# you should disable this if you want keep-inventory to work
+# if you enable this, items will be taken away and stored in the grave on death, even if third party plugin tries to keep them
+# enabling this will also make the keep-inventory gamerule ineffective
 override-keep-inventory: false
+
+# if you enable this, xp levels will be taken away and stored in the grave on death, even if third party plugin tries to keep them
+override-keep-level: false
 
 # how high should grave holograms spawn?
 # only applies to new graves
@@ -48,6 +52,10 @@ interact-only-own: false
 # should the player lose any xp on death?
 # this is a percentage, so 0.5 would be 50% xp
 xp-keep-percentage: 1.0
+
+# should the plugin store items in graves?
+# if disabled, the items will be dropped on the ground
+store-items: true
 
 # should the plugin store XP in graves?
 # if disabled, XP will be dropped on the ground
@@ -152,4 +160,4 @@ update-notifier:
   on-join: true
 
 # do not edit
-version: 17
+version: 18

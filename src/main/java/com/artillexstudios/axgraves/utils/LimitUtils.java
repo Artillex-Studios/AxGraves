@@ -12,6 +12,7 @@ public class LimitUtils {
         boolean has = false;
 
         for (PermissionAttachmentInfo pai : player.getEffectivePermissions()) {
+            if (!pai.getValue()) continue;
             if (!pai.getPermission().startsWith("axgraves.limit.")) continue;
             int value = Integer.parseInt(pai.getPermission().replace("axgraves.limit.", ""));
             am = Math.max(am, value);

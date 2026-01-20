@@ -2,6 +2,8 @@ package com.artillexstudios.axgraves.grave;
 
 import com.artillexstudios.axapi.placeholders.PlaceholderHandler;
 import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axgraves.utils.LimitUtils;
+import org.bukkit.entity.Player;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
@@ -40,5 +42,16 @@ public class GravePlaceholders {
             long spawned = grave.getSpawned();
             return StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned);
         }, false);
+
+        PlaceholderHandler.register("grave_count", handler -> {
+            return String.valueOf(SpawnedGraves.getGraves().size());
+        }, true);
+
+        PlaceholderHandler.register("grave_limit", handler -> {
+            Player player = handler.resolve(Player.class);
+            if (player == null) return empty;
+            int limit = LimitUtils.getGraveLimit(player);
+            return String.valueOf(limit == -1 ? "∞" : limit);
+        }, true);
     }
 }

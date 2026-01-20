@@ -32,11 +32,11 @@ public class TickGraves {
             for (Grave grave : SpawnedGraves.getGraves()) {
                 for (HumanEntity viewer : new ArrayList<>(grave.getGui().getViewers())) {
                     if (!Objects.equals(viewer.getWorld(), grave.getLocation().getWorld())) {
-                        viewer.closeInventory();
+                        grave.closeInventory(viewer);
                         continue;
                     }
                     if (viewer.getLocation().distanceSquared(grave.getLocation()) <= 49) continue;
-                    viewer.closeInventory();
+                    grave.closeInventory(viewer);
                 }
             }
         }, 20, 20);

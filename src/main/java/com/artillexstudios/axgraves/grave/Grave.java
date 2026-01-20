@@ -37,6 +37,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,7 +107,11 @@ public class Grave {
             entity.teleport(entity.location());
         }
 
-        entity.onInteract(event -> Scheduler.get().run(task -> interact(event.getPlayer(), event.getHand())));
+        entity.onInteract(event -> {
+            Scheduler.get().runAt(location, task -> {
+                interact(event.getPlayer(), event.getHand());
+            });
+        });
 
         updateHologram();
     }
@@ -253,7 +258,7 @@ public class Grave {
     }
 
     public void removeInventory() {
-        closeInventory();
+        closeInventory(null);
 
         if (CONFIG.getBoolean("drop-items", true)) {
             for (ItemStack it : gui.getContents()) {
@@ -269,11 +274,17 @@ public class Grave {
         exp.setExperience(storedXP);
     }
 
-    private void closeInventory() {
-        final List<HumanEntity> viewers = new ArrayList<>(gui.getViewers());
-        for (HumanEntity viewer : viewers) {
-            viewer.closeInventory();
-        }
+    public void closeInventory(@Nullable HumanEntity closeFor) {
+        Scheduler.get().executeAt(location, () -> {
+            if (closeFor != null) {
+                closeFor.closeInventory();
+                return;
+            }
+            List<HumanEntity> viewers = new ArrayList<>(gui.getViewers());
+            for (HumanEntity viewer : viewers) {
+                viewer.closeInventory();
+            }
+        });
     }
 
     public Location getLocation() {

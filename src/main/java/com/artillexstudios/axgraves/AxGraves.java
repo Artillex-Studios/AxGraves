@@ -51,7 +51,6 @@ public final class AxGraves extends AxPlugin {
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         CommandManager.load();
-
         GravePlaceholders.register();
 
         if (CONFIG.getBoolean("save-graves.enabled", true)) {
@@ -91,5 +90,7 @@ public final class AxGraves extends AxPlugin {
         FeatureFlags.PACKET_ENTITY_TRACKER_ENABLED.set(true);
         FeatureFlags.HOLOGRAM_UPDATE_TICKS.set(5L);
         FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
+        FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
+        FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("AxGraves");
     }
 }
