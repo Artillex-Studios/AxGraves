@@ -3,6 +3,7 @@ package com.artillexstudios.axgraves.commands.subcommands;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
+import com.artillexstudios.axgraves.listeners.DeathListener;
 import com.artillexstudios.axgraves.schedulers.SaveGraves;
 import org.bukkit.command.CommandSender;
 
@@ -36,6 +37,7 @@ public enum Reload {
             }
         });
 
+        DeathListener.reload();
         GravePlaceholders.reload();
         SaveGraves.start();
 
