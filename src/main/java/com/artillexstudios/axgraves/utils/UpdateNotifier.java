@@ -41,8 +41,7 @@ public class UpdateNotifier implements Listener {
             this.newest = isLatest(current);
 
             if (latest == null || newest) return;
-            Scheduler.get().runLaterAsync(t2 ->
-                  Bukkit.getConsoleSender().sendMessage(getMessage()), 50L);
+            Scheduler.get().runLaterAsync(t2 -> Bukkit.getConsoleSender().sendMessage(getMessage()), 50L);
             t.cancel();
         }, 0, time);
     }

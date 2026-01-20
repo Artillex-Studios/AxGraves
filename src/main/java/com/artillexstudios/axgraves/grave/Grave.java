@@ -58,7 +58,7 @@ public class Grave {
     private int storedXP;
     private final PacketEntity entity;
     private Hologram hologram;
-    private volatile boolean removed = false;
+    private boolean removed = false;
 
     public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
         items = new ArrayList<>(items);
