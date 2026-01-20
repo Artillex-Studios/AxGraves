@@ -4,7 +4,6 @@ import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Objects;
