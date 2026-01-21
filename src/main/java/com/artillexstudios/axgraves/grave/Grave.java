@@ -64,8 +64,7 @@ public class Grave {
         items = new ArrayList<>(items);
         items.removeIf(it -> {
             if (it == null) return true;
-            if (BlacklistUtils.isBlacklisted(it)) return true;
-            return false;
+            return BlacklistUtils.isBlacklisted(it);
         });
         items.replaceAll(ItemStack::clone); // clone all items
 
@@ -107,16 +106,14 @@ public class Grave {
             entity.teleport(entity.location());
         }
 
-        entity.onInteract(event -> {
-            Scheduler.get().runAt(location, task -> {
-                interact(event.getPlayer(), event.getHand());
-            });
-        });
+        entity.onInteract(event -> Scheduler.get().runAt(location, task -> interact(event.getPlayer(), event.getHand())));
 
         updateHologram();
     }
 
     public void update() {
+        if (removed) return;
+
         int items = countItems();
 
         int time = CONFIG.getInt("despawn-time-seconds", 180);
@@ -124,7 +121,7 @@ public class Grave {
         boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
         boolean empty = items == 0 && storedXP == 0;
         if ((time != -1 && outOfTime) || (despawn && empty)) {
-            Scheduler.get().runAt(location, this::remove);
+            remove();
             return;
         }
 
@@ -135,6 +132,8 @@ public class Grave {
     }
 
     public void interact(@NotNull Player opener, ServerboundInteractWrapper.InteractionHand slot) {
+        if (removed) return;
+
         if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
             MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
             return;
@@ -200,7 +199,7 @@ public class Grave {
         Bukkit.getPluginManager().callEvent(graveOpenEvent);
         if (graveOpenEvent.isCancelled()) return;
 
-        opener.openInventory(gui);
+        Scheduler.get().run(opener, task -> opener.openInventory(gui), null);
     }
 
     public void updateHologram() {
@@ -209,7 +208,7 @@ public class Grave {
         List<String> lines = LANG.getStringList("hologram");
 
         double hologramHeight = CONFIG.getFloat("hologram-height", 0.75f) + 1;
-        hologram = new Hologram(location.clone().add(0, getNewHeight(hologramHeight, lines.size(), 0.3f), 0));
+        hologram = new Hologram(location.clone().add(0, getNewHeight(hologramHeight, lines.size()), 0));
 
         HologramPage<String, HologramType<String>> page = hologram.createPage(HologramTypes.TEXT);
         page.getParameters().withParameter(Grave.class, this);
@@ -228,8 +227,8 @@ public class Grave {
         page.spawn();
     }
 
-    private static double getNewHeight(double y, int lines, float lineHeight) {
-        return y - lineHeight * (lines - 1) + 0.25;
+    private static double getNewHeight(double y, int lines) {
+        return y - (float) 0.3 * (lines - 1) + 0.25;
     }
 
     public int countItems() {
@@ -245,19 +244,16 @@ public class Grave {
         if (removed) return;
         removed = true;
 
-        Runnable runnable = () -> {
+        Scheduler.get().runAt(location, task -> {
             SpawnedGraves.removeGrave(this);
             removeInventory();
 
             if (entity != null) entity.remove();
             if (hologram != null) hologram.remove();
-        };
-
-        if (Scheduler.get().isOwnedByCurrentRegion(location)) runnable.run();
-        else Scheduler.get().runAt(location, runnable);
+        });
     }
 
-    public void removeInventory() {
+    private void removeInventory() {
         closeInventory(null);
 
         if (CONFIG.getBoolean("drop-items", true)) {
@@ -280,6 +276,7 @@ public class Grave {
                 closeFor.closeInventory();
                 return;
             }
+
             List<HumanEntity> viewers = new ArrayList<>(gui.getViewers());
             for (HumanEntity viewer : viewers) {
                 viewer.closeInventory();
