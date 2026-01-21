@@ -57,7 +57,10 @@ public class DeathListener implements Listener {
 
         final GravePreSpawnEvent gravePreSpawnEvent = new GravePreSpawnEvent(player, location);
         Bukkit.getPluginManager().callEvent(gravePreSpawnEvent);
-        if (gravePreSpawnEvent.isCancelled()) return;
+        if (gravePreSpawnEvent.isCancelled()) {
+            grave.remove(false);
+            return;
+        }
 
         List<ItemStack> drops = new ArrayList<>();
         if (storeItems) {
