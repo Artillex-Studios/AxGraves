@@ -140,6 +140,12 @@ blacklisted-items:
     material: "barrier"
     name-contains: "Banned item's name"
 
+# what event priority should the plugin use? if everything is working, no need to touch this
+# however if the plugin is spawning graves without items, you can try setting this to lower values (lower = runs earlier)
+# values: LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR
+# requires a restart to change
+death-listener-priority: MONITOR
+
 # settings for holograms displays
 holograms:
   # set to 00000000 to make it invisible
@@ -159,5 +165,9 @@ update-notifier:
   # if enabled, it will broadcast the update message to all players who have the <plugin-name>.update-notify permission
   on-join: true
 
+# prints out a lot of information about the plugin in the console
+# this can cause a lot of spam, only use if a developer asks you to
+debug: false
+
 # do not edit
-version: 18
+version: 19
