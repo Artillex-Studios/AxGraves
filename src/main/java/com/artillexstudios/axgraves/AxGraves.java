@@ -32,6 +32,15 @@ public final class AxGraves extends AxPlugin {
     public static MessageUtils MESSAGEUTILS;
     public static ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static AxMetrics metrics;
+    private static boolean debugMode;
+
+    public static boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public static void setDebugMode(boolean debugMode) {
+        AxGraves.debugMode = debugMode;
+    }
 
     public static AxPlugin getInstance() {
         return instance;
@@ -45,9 +54,10 @@ public final class AxGraves extends AxPlugin {
         CONFIG = new Config(new File(getDataFolder(), "config.yml"), getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
         LANG = new Config(new File(getDataFolder(), "messages.yml"), getResource("messages.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("version")).build());
 
+        debugMode = CONFIG.getBoolean("debug", false);
         MESSAGEUTILS = new MessageUtils(LANG.getBackingDocument(), "prefix", CONFIG.getBackingDocument());
 
-        getServer().getPluginManager().registerEvents(new DeathListener(), this);
+        new DeathListener();
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         CommandManager.load();
@@ -91,6 +101,6 @@ public final class AxGraves extends AxPlugin {
         FeatureFlags.HOLOGRAM_UPDATE_TICKS.set(5L);
         FeatureFlags.ENABLE_PACKET_LISTENERS.set(true);
         FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
-        FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("AxGraves");
+        FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axgraves");
     }
 }

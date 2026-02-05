@@ -1,5 +1,6 @@
 package com.artillexstudios.axgraves.commands.subcommands;
 
+import com.artillexstudios.axgraves.AxGraves;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.GravePlaceholders;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
@@ -37,6 +38,7 @@ public enum Reload {
             }
         });
 
+        AxGraves.setDebugMode(CONFIG.getBoolean("debug", false));
         DeathListener.reload();
         GravePlaceholders.reload();
         SaveGraves.start();
