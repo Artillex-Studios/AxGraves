@@ -1,5 +1,6 @@
 package com.artillexstudios.axgraves.commands.subcommands;
 
+import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
@@ -22,7 +23,8 @@ public enum Teleport {
                 MESSAGEUTILS.sendLang(sender, "grave-list.no-graves");
                 return;
             }
-            PaperUtils.teleportAsync(sender, grave.getLocation().clone().add(0, 0.5, 0));
+            Scheduler.get().run(sender, task ->
+                  PaperUtils.teleportAsync(sender, grave.getLocation().clone().add(0, 0.5, 0)), null);
             return;
         }
 
@@ -34,6 +36,7 @@ public enum Teleport {
                 .findAny();
 
         if (!sender.hasPermission("axgraves.tp.bypass") && grave.isEmpty()) return;
-        PaperUtils.teleportAsync(sender, grave.map(value -> value.getLocation().clone().add(0, 0.5, 0)).orElse(location));
+        Scheduler.get().run(sender, task ->
+              PaperUtils.teleportAsync(sender, grave.map(value -> value.getLocation().clone().add(0, 0.5, 0)).orElse(location)), null);
     }
 }

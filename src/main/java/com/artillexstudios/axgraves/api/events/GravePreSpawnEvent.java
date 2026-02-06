@@ -1,6 +1,5 @@
 package com.artillexstudios.axgraves.api.events;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -15,7 +14,7 @@ public class GravePreSpawnEvent extends Event implements Cancellable {
     private boolean isCancelled = false;
 
     public GravePreSpawnEvent(@NotNull Player player, @NotNull Location location) {
-        super(!Bukkit.isPrimaryThread());
+        super(false);
 
         this.player = player;
         this.location = location;
