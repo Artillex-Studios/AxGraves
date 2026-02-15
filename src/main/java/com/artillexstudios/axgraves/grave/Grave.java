@@ -27,7 +27,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.enchantments.EnchantmentTarget;
+// EnchantmentTarget removed - broken in 1.21+, using Material name checks instead
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.HumanEntity;
@@ -158,25 +158,43 @@ public class Grave {
                 if (it == null) continue;
 
                 if (CONFIG.getBoolean("auto-equip-armor", true)) {
-                    if ((EnchantmentTarget.ARMOR_HEAD.includes(it) || it.getType().equals(Material.TURTLE_HELMET)) && opener.getInventory().getHelmet() == null) {
+                    String materialName = it.getType().name();
+
+                    // Get current armor (Paper 1.21+ returns AIR ItemStack instead of null for empty slots)
+                    ItemStack currentHelmet = opener.getInventory().getHelmet();
+                    ItemStack currentChestplate = opener.getInventory().getChestplate();
+                    ItemStack currentLeggings = opener.getInventory().getLeggings();
+                    ItemStack currentBoots = opener.getInventory().getBoots();
+
+                    boolean helmetEmpty = currentHelmet == null || currentHelmet.getType() == Material.AIR;
+                    boolean chestplateEmpty = currentChestplate == null || currentChestplate.getType() == Material.AIR;
+                    boolean leggingsEmpty = currentLeggings == null || currentLeggings.getType() == Material.AIR;
+                    boolean bootsEmpty = currentBoots == null || currentBoots.getType() == Material.AIR;
+
+                    // Helmet check - using material name suffix (works in 1.21+)
+                    if ((materialName.endsWith("_HELMET") || materialName.equals("TURTLE_HELMET") ||
+                         materialName.equals("CARVED_PUMPKIN")) && helmetEmpty) {
                         opener.getInventory().setHelmet(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if ((EnchantmentTarget.ARMOR_TORSO.includes(it) || it.getType().equals(Material.ELYTRA)) && opener.getInventory().getChestplate() == null) {
+                    // Chestplate check - including elytra
+                    if ((materialName.endsWith("_CHESTPLATE") || materialName.equals("ELYTRA")) && chestplateEmpty) {
                         opener.getInventory().setChestplate(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (EnchantmentTarget.ARMOR_LEGS.includes(it) && opener.getInventory().getLeggings() == null) {
+                    // Leggings check
+                    if (materialName.endsWith("_LEGGINGS") && leggingsEmpty) {
                         opener.getInventory().setLeggings(it);
                         it.setAmount(0);
                         continue;
                     }
 
-                    if (EnchantmentTarget.ARMOR_FEET.includes(it) && opener.getInventory().getBoots() == null) {
+                    // Boots check
+                    if (materialName.endsWith("_BOOTS") && bootsEmpty) {
                         opener.getInventory().setBoots(it);
                         it.setAmount(0);
                         continue;
