@@ -225,6 +225,7 @@ public class Grave {
         page.setEntityMetaHandler(m -> {
             TextDisplayMeta meta = (TextDisplayMeta) m;
             meta.seeThrough(section.getBoolean("see-through"));
+            meta.shadow(section.getBoolean("shadow", true));
             meta.alignment(TextDisplayMeta.Alignment.valueOf(section.getString("alignment").toUpperCase()));
             meta.backgroundColor(Integer.parseInt(section.getString("background-color"), 16));
             meta.lineWidth(1000);
