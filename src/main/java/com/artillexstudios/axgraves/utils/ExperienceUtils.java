@@ -24,7 +24,7 @@ public final class ExperienceUtils {
         int level = getIntLevelFromExp(exp);
 
         // Get remaining exp progressing towards next level. Cast to float for next bit of math.
-        float remainder = exp - getExpFromLevel(level);
+        float remainder = (float) (exp - getExpFromLevel(level));
 
         // Get level progress with float precision.
         float progress = remainder / getExpToNext(level);
