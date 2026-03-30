@@ -124,7 +124,7 @@ public class DeathListener implements Listener {
             if (debug) LogUtils.debug("[{}] store: {} - drops size: {}", player.getName(), store, drops.size());
         }
 
-        int xp = 0;
+        long xp = 0;
         if (storeXP) {
             boolean store = false;
             if (!event.getKeepLevel()) {
