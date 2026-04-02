@@ -1,7 +1,7 @@
 prefix: "<gradient:#FF00FF:#DD00FF><b>AxGraves</b></gradient> &7» "
 
 # how fast should the graves disappear
-# set to -1 to make graves last until the next server restart
+# set to -1 to make graves never despawn
 # in seconds
 despawn-time-seconds: 180
 
@@ -157,6 +157,8 @@ holograms:
   billboard: vertical
   # should blocks/entities be visible behind the displays?
   see-through: false
+  # should text have an outline?
+  shadow: true
 
 # should be plugin notify you if there is a new update?
 update-notifier:
