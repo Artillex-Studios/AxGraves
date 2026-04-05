@@ -6,25 +6,25 @@ import org.jetbrains.annotations.NotNull;
 public final class ExperienceUtils {
     // credit: https://gist.githubusercontent.com/Jikoo/30ec040443a4701b8980/raw/0745ca25a8aaaf749ba2f2164a809e998f6a37c4/Experience.java
 
-    public static int getExp(@NotNull Player player) {
+    public static long getExp(@NotNull Player player) {
         return getExpFromLevel(player.getLevel()) + Math.round(getExpToNext(player.getLevel()) * player.getExp());
     }
 
-    public static int getExpFromLevel(int level) {
+    public static long getExpFromLevel(int level) {
         if (level > 30) {
-            return (int) (4.5 * level * level - 162.5 * level + 2220);
+            return (long) (4.5 * (long) level * level - 162.5 * level + 2220);
         }
         if (level > 15) {
-            return (int) (2.5 * level * level - 40.5 * level + 360);
+            return (long) (2.5 * (long) level * level - 40.5 * level + 360);
         }
-        return level * level + 6 * level;
+        return (long) level * level + 6L * level;
     }
 
     public static double getLevelFromExp(long exp) {
         int level = getIntLevelFromExp(exp);
 
         // Get remaining exp progressing towards next level. Cast to float for next bit of math.
-        float remainder = exp - (float) getExpFromLevel(level);
+        float remainder = (float) (exp - getExpFromLevel(level));
 
         // Get level progress with float precision.
         float progress = remainder / getExpToNext(level);
@@ -60,7 +60,7 @@ public final class ExperienceUtils {
         return level * 2 + 7;
     }
 
-    public static void changeExp(Player player, int exp) {
+    public static void changeExp(Player player, long exp) {
         exp += getExp(player);
 
         if (exp < 0) {

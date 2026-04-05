@@ -124,7 +124,7 @@ public class DeathListener implements Listener {
             if (debug) LogUtils.debug("[{}] store: {} - drops size: {}", player.getName(), store, drops.size());
         }
 
-        int xp = 0;
+        long xp = 0;
         if (storeXP) {
             boolean store = false;
             if (!event.getKeepLevel()) {
@@ -136,7 +136,7 @@ public class DeathListener implements Listener {
             }
 
             if (store) {
-                xp = Math.round(ExperienceUtils.getExp(player) * xpKeepPercentage);
+                xp = Math.round(ExperienceUtils.getExp(player) * (double) xpKeepPercentage);
                 event.setDroppedExp(0);
             }
             if (debug) LogUtils.debug("[{}] store: {} - xp: {}", player.getName(), store, xp);
