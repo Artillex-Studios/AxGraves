@@ -73,7 +73,8 @@ public final class AxGraves extends AxPlugin {
         metrics = new AxMetrics(this, 20);
         metrics.start();
 
-        if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier(this, 5076);
+        UpdateNotifier.init(CONFIG, LANG);
+        if (CONFIG.getBoolean("update-notifier.enabled", true)) new UpdateNotifier();
     }
 
     public void disable() {
