@@ -53,9 +53,7 @@ public class UpdateNotifier implements Listener {
             this.newest = !isOutdated(current);
 
             if (latest == null || newest) return;
-            Scheduler.get().runLaterAsync(t2 -> {
-                Bukkit.getConsoleSender().sendMessage(getMessage());
-            }, 50L);
+            Scheduler.get().runLaterAsync(t2 -> Bukkit.getConsoleSender().sendMessage(getMessage()), 50L);
             t.cancel();
         }, 0, time);
     }
@@ -65,9 +63,7 @@ public class UpdateNotifier implements Listener {
         if (latest == null || newest) return;
         if (!onJoin) return;
         if (!event.getPlayer().hasPermission(AxGraves.getInstance().getName().toLowerCase() + ".update-notify")) return;
-        Scheduler.get().runLaterAsync(t -> {
-            event.getPlayer().sendMessage(getMessage());
-        }, 50L);
+        Scheduler.get().runLaterAsync(t -> event.getPlayer().sendMessage(getMessage()), 50L);
     }
 
     private String getMessage() {
@@ -92,10 +88,6 @@ public class UpdateNotifier implements Listener {
         } catch (Exception ex) {
             return null;
         }
-    }
-
-    public String getLatest() {
-        return latest;
     }
 
     public boolean isOutdated(String current) {
