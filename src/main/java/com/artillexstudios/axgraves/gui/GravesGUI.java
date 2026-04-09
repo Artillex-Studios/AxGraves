@@ -60,7 +60,7 @@ public class GravesGUI {
                     && !player.hasPermission("axgraves.tp.free");
             double cost = CONFIG.getDouble("teleport-cost.amount", 100.0);
             String costStr = costEnabled
-                    ? LANG.getString("gui.cost-format", "$%amount%").replace("%amount%", String.format("%.2f", cost))
+                    ? LANG.getString("gui.cost-format", "$%amount%").replace("%amount%", String.format("%,.2f", cost))
                     : LANG.getString("gui.cost-free", "Free");
 
             for (int i = 0; i < playerGraves.size(); i++) {

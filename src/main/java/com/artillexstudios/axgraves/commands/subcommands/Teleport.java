@@ -51,12 +51,12 @@ public enum Teleport {
         if (cost <= 0) return true;
 
         if (!VaultHook.hasBalance(player, cost)) {
-            MESSAGEUTILS.sendLang(player, "teleport.not-enough-money", Map.of("%amount%", String.format("%.2f", cost)));
+            MESSAGEUTILS.sendLang(player, "teleport.not-enough-money", Map.of("%amount%", String.format("%,.2f", cost)));
             return false;
         }
 
         VaultHook.withdraw(player, cost);
-        MESSAGEUTILS.sendLang(player, "teleport.cost-deducted", Map.of("%amount%", String.format("%.2f", cost)));
+        MESSAGEUTILS.sendLang(player, "teleport.cost-deducted", Map.of("%amount%", String.format("%,.2f", cost)));
         return true;
     }
 }
