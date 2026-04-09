@@ -5,13 +5,10 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axgraves.utils.LimitUtils;
 import org.bukkit.entity.Player;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
 public class GravePlaceholders {
-    private static int time;
 
     public static void reload() {
-        time = CONFIG.getInt("despawn-time-seconds", 180);
     }
 
     public static void register() {
@@ -39,8 +36,9 @@ public class GravePlaceholders {
         PlaceholderHandler.register("despawn-time", handler -> {
             Grave grave = handler.raw(Grave.class);
             if (grave == null) return empty;
+            int despawnSeconds = grave.getDespawnSeconds();
             long spawned = grave.getSpawned();
-            return StringUtils.formatTime(time != -1 ? (time * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned);
+            return StringUtils.formatTime(despawnSeconds != -1 ? (despawnSeconds * 1_000L - (System.currentTimeMillis() - spawned)) : System.currentTimeMillis() - spawned);
         }, false);
 
         PlaceholderHandler.register("grave_count", handler -> {
