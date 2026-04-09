@@ -149,7 +149,8 @@ public class Grave {
 
         if (!isOwner && !isAdmin) {
             if (isProtected()) {
-                MESSAGEUTILS.sendLang(opener, "interact.grave-protected");
+                long remaining = protectionSeconds * 1_000L - (System.currentTimeMillis() - spawned);
+                MESSAGEUTILS.sendLang(opener, "interact.grave-protected", Map.of("%time%", StringUtils.formatTime(remaining)));
                 return;
             }
             if (CONFIG.getBoolean("interact-only-own", false)) {
