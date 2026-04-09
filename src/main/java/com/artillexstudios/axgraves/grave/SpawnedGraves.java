@@ -67,6 +67,7 @@ public class SpawnedGraves {
             obj.addProperty("xp", grave.getStoredXP());
             obj.addProperty("date", grave.getSpawned());
             obj.addProperty("despawnSeconds", grave.getDespawnSeconds());
+            obj.addProperty("protectionSeconds", grave.getProtectionSeconds());
 
             array.add(obj);
         }
@@ -101,7 +102,8 @@ public class SpawnedGraves {
                 int xp = obj.get("xp").getAsInt();
                 long date = obj.get("date").getAsLong();
                 int despawnSeconds = obj.has("despawnSeconds") ? obj.get("despawnSeconds").getAsInt() : CONFIG.getInt("despawn-time-seconds", 180);
-                addGrave(new Grave(location, owner, Arrays.asList(items), xp, date, despawnSeconds));
+                int protectionSeconds = obj.has("protectionSeconds") ? obj.get("protectionSeconds").getAsInt() : CONFIG.getInt("grave-protection-seconds", 300);
+                addGrave(new Grave(location, owner, Arrays.asList(items), xp, date, despawnSeconds, protectionSeconds));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

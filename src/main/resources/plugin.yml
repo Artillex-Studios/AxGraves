@@ -30,3 +30,11 @@ permissions:
     default: false
   axgraves.despawn.-1:
     default: false
+  axgraves.protection.0:
+    default: false
+  axgraves.protection.300:
+    default: false
+  axgraves.protection.600:
+    default: false
+  axgraves.protection.1800:
+    default: false

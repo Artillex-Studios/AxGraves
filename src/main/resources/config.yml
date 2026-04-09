@@ -171,6 +171,12 @@ update-notifier:
 # this can cause a lot of spam, only use if a developer asks you to
 debug: false
 
+# how long in seconds the grave is protected (only the owner + axgraves.admin can open it)
+# after this time anyone can open the grave (unless interact-only-own is true)
+# set to 0 to disable protection entirely
+# you can override per player with axgraves.protection.<seconds>
+grave-protection-seconds: 300
+
 # cost to teleport to a grave via /graves tp
 # requires Vault + an economy plugin
 teleport-cost:

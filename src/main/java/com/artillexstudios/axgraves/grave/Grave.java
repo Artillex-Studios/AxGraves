@@ -52,6 +52,7 @@ public class Grave {
     private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
     private final long spawned;
     private final int despawnSeconds;
+    private final int protectionSeconds;
     private final Location location;
     private final OfflinePlayer player;
     private final String playerName;
@@ -61,7 +62,7 @@ public class Grave {
     private Hologram hologram;
     private boolean removed = false;
 
-    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date, int despawnSeconds) {
+    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date, int despawnSeconds, int protectionSeconds) {
         items = new ArrayList<>(items);
         items.removeIf(it -> {
             if (it == null) return true;
@@ -76,6 +77,7 @@ public class Grave {
         this.storedXP = storedXP;
         this.spawned = date;
         this.despawnSeconds = despawnSeconds;
+        this.protectionSeconds = protectionSeconds;
         this.gui = Bukkit.createInventory(
                 null,
                 InventoryUtils.getRequiredRows(items.size()) * 9,
@@ -136,10 +138,24 @@ public class Grave {
         }
     }
 
+    public boolean isProtected() {
+        if (protectionSeconds <= 0) return false;
+        return (System.currentTimeMillis() - spawned) < protectionSeconds * 1_000L;
+    }
+
     public void interact(@NotNull Player opener, ServerboundInteractWrapper.InteractionHand slot) {
-        if (CONFIG.getBoolean("interact-only-own", false) && !opener.getUniqueId().equals(player.getUniqueId()) && !opener.hasPermission("axgraves.admin")) {
-            MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
-            return;
+        boolean isOwner = opener.getUniqueId().equals(player.getUniqueId());
+        boolean isAdmin = opener.hasPermission("axgraves.admin");
+
+        if (!isOwner && !isAdmin) {
+            if (isProtected()) {
+                MESSAGEUTILS.sendLang(opener, "interact.grave-protected");
+                return;
+            }
+            if (CONFIG.getBoolean("interact-only-own", false)) {
+                MESSAGEUTILS.sendLang(opener, "interact.not-your-grave");
+                return;
+            }
         }
 
         final GraveInteractEvent graveInteractEvent = new GraveInteractEvent(opener, this);
@@ -311,6 +327,10 @@ public class Grave {
 
     public int getDespawnSeconds() {
         return despawnSeconds;
+    }
+
+    public int getProtectionSeconds() {
+        return protectionSeconds;
     }
 
     public Inventory getGui() {

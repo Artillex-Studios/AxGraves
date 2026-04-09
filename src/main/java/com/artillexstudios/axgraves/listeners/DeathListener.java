@@ -148,7 +148,8 @@ public class DeathListener implements Listener {
             return;
         }
         int despawnSeconds = LimitUtils.getDespawnSeconds(player);
-        Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis(), despawnSeconds);
+        int protectionSeconds = LimitUtils.getProtectionSeconds(player);
+        Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis(), despawnSeconds, protectionSeconds);
         SpawnedGraves.addGrave(grave);
         if (debug) LogUtils.debug("[{}] created and added grave", player.getName());
 

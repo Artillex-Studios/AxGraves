@@ -22,6 +22,7 @@ reload:
 
 interact:
   not-your-grave: "&#FFAAFFYou can only open your own grave!"
+  grave-protected: "&#FFAAAAThis grave is still protected! Come back later."
 
 death-message:
   enabled: false
