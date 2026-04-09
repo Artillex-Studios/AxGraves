@@ -51,6 +51,7 @@ import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 public class Grave {
     private static final Vector ZERO_VECTOR = new Vector(0, 0, 0);
     private final long spawned;
+    private final int despawnSeconds;
     private final Location location;
     private final OfflinePlayer player;
     private final String playerName;
@@ -60,7 +61,7 @@ public class Grave {
     private Hologram hologram;
     private boolean removed = false;
 
-    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
+    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date, int despawnSeconds) {
         items = new ArrayList<>(items);
         items.removeIf(it -> {
             if (it == null) return true;
@@ -74,6 +75,7 @@ public class Grave {
         this.playerName = offlinePlayer.getName() == null ? LANG.getString("unknown-player", "???") : offlinePlayer.getName();
         this.storedXP = storedXP;
         this.spawned = date;
+        this.despawnSeconds = despawnSeconds;
         this.gui = Bukkit.createInventory(
                 null,
                 InventoryUtils.getRequiredRows(items.size()) * 9,
@@ -119,7 +121,7 @@ public class Grave {
     public void update() {
         int items = countItems();
 
-        int time = CONFIG.getInt("despawn-time-seconds", 180);
+        int time = despawnSeconds;
         boolean outOfTime = time * 1_000L <= (System.currentTimeMillis() - spawned);
         boolean despawn = CONFIG.getBoolean("despawn-when-empty", true);
         boolean empty = items == 0 && storedXP == 0;
@@ -305,6 +307,10 @@ public class Grave {
 
     public long getSpawned() {
         return spawned;
+    }
+
+    public int getDespawnSeconds() {
+        return despawnSeconds;
     }
 
     public Inventory getGui() {
