@@ -66,6 +66,8 @@ public class SpawnedGraves {
             obj.addProperty("items", Base64.getEncoder().encodeToString(Serializers.ITEM_ARRAY.serialize(grave.getGui().getContents())));
             obj.addProperty("xp", grave.getStoredXP());
             obj.addProperty("date", grave.getSpawned());
+            obj.addProperty("despawnSeconds", grave.getDespawnSeconds());
+            obj.addProperty("protectionSeconds", grave.getProtectionSeconds());
 
             array.add(obj);
         }
@@ -99,7 +101,9 @@ public class SpawnedGraves {
                 ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(Base64.getDecoder().decode(itStr));
                 int xp = obj.get("xp").getAsInt();
                 long date = obj.get("date").getAsLong();
-                addGrave(new Grave(location, owner, Arrays.asList(items), xp, date));
+                int despawnSeconds = obj.has("despawnSeconds") ? obj.get("despawnSeconds").getAsInt() : CONFIG.getInt("despawn-time-seconds", 180);
+                int protectionSeconds = obj.has("protectionSeconds") ? obj.get("protectionSeconds").getAsInt() : CONFIG.getInt("grave-protection-seconds", 300);
+                addGrave(new Grave(location, owner, Arrays.asList(items), xp, date, despawnSeconds, protectionSeconds));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

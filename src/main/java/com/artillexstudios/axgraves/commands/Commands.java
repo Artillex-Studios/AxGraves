@@ -4,6 +4,7 @@ import com.artillexstudios.axgraves.commands.subcommands.Help;
 import com.artillexstudios.axgraves.commands.subcommands.List;
 import com.artillexstudios.axgraves.commands.subcommands.Reload;
 import com.artillexstudios.axgraves.commands.subcommands.Teleport;
+import com.artillexstudios.axgraves.gui.GravesGUI;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +17,17 @@ import revxrsal.commands.orphan.OrphanCommand;
 
 public class Commands implements OrphanCommand {
 
-    @DefaultFor({"~", "~ help"})
+    @DefaultFor("~")
+    @CommandPermission("axgraves.help")
+    public void defaultCmd(@NotNull CommandSender sender) {
+        if (sender instanceof Player player) {
+            GravesGUI.open(player);
+        } else {
+            Help.INSTANCE.execute(sender);
+        }
+    }
+
+    @Subcommand("help")
     @CommandPermission("axgraves.help")
     public void help(@NotNull CommandSender sender) {
         Help.INSTANCE.execute(sender);

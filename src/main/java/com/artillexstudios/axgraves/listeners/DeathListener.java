@@ -7,6 +7,7 @@ import com.artillexstudios.axgraves.api.events.GraveSpawnEvent;
 import com.artillexstudios.axgraves.grave.Grave;
 import com.artillexstudios.axgraves.grave.SpawnedGraves;
 import com.artillexstudios.axgraves.utils.ExperienceUtils;
+import com.artillexstudios.axgraves.utils.LimitUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -146,7 +147,9 @@ public class DeathListener implements Listener {
             if (debug) LogUtils.debug("[{}] return: drops empty and xp is 0", player.getName());
             return;
         }
-        Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis());
+        int despawnSeconds = LimitUtils.getDespawnSeconds(player);
+        int protectionSeconds = LimitUtils.getProtectionSeconds(player);
+        Grave grave = new Grave(location, player, drops, xp, System.currentTimeMillis(), despawnSeconds, protectionSeconds);
         SpawnedGraves.addGrave(grave);
         if (debug) LogUtils.debug("[{}] created and added grave", player.getName());
 

@@ -22,6 +22,7 @@ reload:
 
 interact:
   not-your-grave: "&#FFAAFFYou can only open your own grave!"
+  grave-protected: "&#FFAAAAThis grave is protected for another &#FF3333%time%&#FFAAAA!"
 
 death-message:
   enabled: false
@@ -41,6 +42,28 @@ commands:
   player-only: "&#FF0000You must be a player to use this command!"
   invalid-player: "&#FF0000The player &#BB0000%player% &#FF0000can not be found!"
   invalid-selector: "&#FF0000You can not use this selector in this command!"
+
+gui:
+  title: "&#FF00FF Your Graves"
+  grave-item-name: "&#FF00FFGrave #%number%"
+  grave-item-lore:
+    - " "
+    - "&#AAAAAAWorld: &#FFFFFF%world%"
+    - "&#AAAAAA%x%, %y%, %z%"
+    - "&#AAAAAAAATime left: &#FFFFFF%time%"
+    - "&#AAAAAAAATeleport cost: &#FF3333%cost%"
+    - " "
+    - "&#FFAAFF> Click to teleport"
+  cost-free: "Free"
+  cost-format: "$%amount%"
+  time-never: "Never"
+  no-graves-name: "&#FF3333No active graves"
+  no-graves-lore:
+    - "&#AAAAAAAAYou have no active graves."
+
+teleport:
+  not-enough-money: "&#FF3333You need &#FF0000$%amount% &#FF3333to teleport to your grave!"
+  cost-deducted: "&#FFAAAATeleported to grave. &#FF3333-$%amount% &#FFAAAAdeducted."
 
 update-notifier: "&#FF88FFThere is a new version of AxGraves available! &#DDDDDD(&#FFFFFFcurrent: &#FF0000%current% &#DDDDDD| &#FFFFFFlatest: &#00FF00%latest%&#DDDDDD)"
 

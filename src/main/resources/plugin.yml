@@ -3,6 +3,7 @@ version: '${project.version}'
 main: com.artillexstudios.axgraves.AxGraves
 api-version: '1.20'
 folia-supported: true
+softdepend: [Vault]
 
 permissions:
   axgraves.help:
@@ -20,4 +21,20 @@ permissions:
   axgraves.allowgraves:
     default: true
   axgraves.limit.1:
+    default: false
+  axgraves.tp.free:
+    default: false
+  axgraves.despawn.600:
+    default: false
+  axgraves.despawn.1800:
+    default: false
+  axgraves.despawn.-1:
+    default: false
+  axgraves.protection.0:
+    default: false
+  axgraves.protection.300:
+    default: false
+  axgraves.protection.600:
+    default: false
+  axgraves.protection.1800:
     default: false

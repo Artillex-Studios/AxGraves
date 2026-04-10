@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 import static com.artillexstudios.axgraves.AxGraves.LANG;
 import static com.artillexstudios.axgraves.AxGraves.MESSAGEUTILS;
 
@@ -24,7 +23,6 @@ public enum List {
 
     public void execute(CommandSender sender) {
         boolean found = false;
-        int dTime = CONFIG.getInt("despawn-time-seconds", 180);
         for (Grave grave : SpawnedGraves.getGraves()) {
             // skip grave if player doesn't have permission to view others' graves
             if (sender instanceof Player player && !grave.getPlayer().getUniqueId().equals(player.getUniqueId())) {
@@ -39,7 +37,7 @@ public enum List {
                     "%x%", "" + l.getBlockX(),
                     "%y%", "" + l.getBlockY(),
                     "%z%", "" + l.getBlockZ(),
-                    "%time%", StringUtils.formatTime(dTime != -1 ? (dTime * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned())
+                    "%time%", StringUtils.formatTime(grave.getDespawnSeconds() != -1 ? (grave.getDespawnSeconds() * 1_000L - (System.currentTimeMillis() - grave.getSpawned())) : System.currentTimeMillis() - grave.getSpawned())
             );
 
             if (!found) {
