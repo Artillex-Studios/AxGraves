@@ -27,6 +27,10 @@ death-message:
   enabled: false
   message: "&#FFAAAAYou have died at &f%world% %x%, %y%, %z%&#FFAAAA!"
 
+death-broadcast:
+  enabled: false
+  message: "&#FFAAAA%player% has died at &f%world% %x%, %y%, %z%&#FFAAAA!"
+
 grave-list:
   header: "&#FF00FF&l=== GRAVES ==="
   grave: "&#FF00FF[TP] &#FFAAFF%player% &7- &#FFAAFF%world% %x%, %y%, %z% &7(%time%)"

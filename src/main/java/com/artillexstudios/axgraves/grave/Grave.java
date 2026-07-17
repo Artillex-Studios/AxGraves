@@ -89,6 +89,18 @@ public class Grave {
                 MESSAGEUTILS.sendLang(pl, "death-message.message", Map.of("%world%", LocationUtils.getWorldName(location.getWorld()), "%x%", "" + location.getBlockX(), "%y%", "" + location.getBlockY(), "%z%", "" + location.getBlockZ()));
             }
         }
+
+        if (LANG.getBoolean("death-broadcast.enabled", false)) {
+            Map<String, String> placeholders = Map.of(
+                    "%player%", playerName,
+                    "%world%", LocationUtils.getWorldName(location.getWorld()),
+                    "%x%", "" + location.getBlockX(),
+                    "%y%", "" + location.getBlockY(),
+                    "%z%", "" + location.getBlockZ());
+            for (Player online : Bukkit.getOnlinePlayers()) {
+                MESSAGEUTILS.sendLang(online, "death-broadcast.message", placeholders);
+            }
+        }
         items.forEach(gui::addItem);
 
         this.entity = NMSHandlers.getNmsHandler().createEntity(EntityType.ARMOR_STAND, location.clone().add(0, 1 + CONFIG.getFloat("head-height", -1.2f), 0));
