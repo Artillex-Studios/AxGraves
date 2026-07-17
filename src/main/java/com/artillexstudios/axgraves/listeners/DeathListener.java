@@ -19,11 +19,14 @@ import org.bukkit.plugin.EventExecutor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static com.artillexstudios.axgraves.AxGraves.CONFIG;
 
 public class DeathListener implements Listener {
     private static List<String> disabledWorlds;
+    private static List<Pattern> disabledWorldPatterns;
     private static List<String> blacklistedDeathCauses;
     private static boolean overrideKeepInventory;
     private static boolean overrideKeepLevel;
@@ -32,13 +35,43 @@ public class DeathListener implements Listener {
     private static float xpKeepPercentage;
 
     public static void reload() {
-        disabledWorlds = CONFIG.getStringList("disabled-worlds");
+        List<String> rawDisabledWorlds = CONFIG.getStringList("disabled-worlds");
+        disabledWorlds = new ArrayList<>();
+        disabledWorldPatterns = new ArrayList<>();
+        for (String entry : rawDisabledWorlds) {
+            if (entry.startsWith("regex:")) {
+                String pattern = entry.substring("regex:".length());
+                if (pattern.isEmpty()) {
+                    LogUtils.error("invalid regex in disabled-worlds: '{}' is empty", entry);
+                    continue;
+                }
+                try {
+                    disabledWorldPatterns.add(Pattern.compile(pattern));
+                } catch (PatternSyntaxException ex) {
+                    LogUtils.error("invalid regex in disabled-worlds: '{}' ({})", entry, ex.getMessage());
+                }
+            } else {
+                disabledWorlds.add(entry);
+            }
+        }
         blacklistedDeathCauses = CONFIG.getStringList("blacklisted-death-causes");
         overrideKeepInventory = CONFIG.getBoolean("override-keep-inventory", true);
         overrideKeepLevel = CONFIG.getBoolean("override-keep-level", true);
         storeItems = CONFIG.getBoolean("store-items", true);
         storeXP = CONFIG.getBoolean("store-xp", true);
         xpKeepPercentage = CONFIG.getFloat("xp-keep-percentage", 1f);
+    }
+
+    private static boolean isWorldDisabled(String worldName) {
+        if (disabledWorlds.contains(worldName)) {
+            return true;
+        }
+        for (Pattern pattern : disabledWorldPatterns) {
+            if (pattern.matcher(worldName).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public DeathListener() {
@@ -74,7 +107,7 @@ public class DeathListener implements Listener {
         Player player = event.getEntity();
 
         if (debug) LogUtils.debug("[{}] spawning grave", player.getName());
-        if (disabledWorlds.contains(player.getWorld().getName())) {
+        if (isWorldDisabled(player.getWorld().getName())) {
             if (debug) LogUtils.debug("[{}] return: disabled world {}", player.getName(), player.getWorld().getName());
             return;
         }

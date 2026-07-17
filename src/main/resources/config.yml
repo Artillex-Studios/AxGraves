@@ -124,9 +124,12 @@ world-name:
   world_the_end: "The End"
 
 # worlds where graves won't spawn
-# this is case-sensitive
+# entries are case-sensitive exact matches by default
+# prefix an entry with "regex:" to match by pattern, e.g. "regex:world_.*" matches any world starting with "world_"
+# invalid regex entries are skipped and logged
 disabled-worlds:
   - "blacklisted_world"
+  - "regex:blacklisted_worlds_.*"
 
 # if players die from any of the following, no graves will be spawned
 # list of valid values: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
