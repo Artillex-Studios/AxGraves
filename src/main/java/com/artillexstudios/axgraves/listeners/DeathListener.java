@@ -73,7 +73,7 @@ public class DeathListener implements Listener {
         boolean debug = AxGraves.isDebugMode();
         Player player = event.getEntity();
 
-        if (debug) LogUtils.debug("[{}] spawning grave", player.getName());
+        if (debug) LogUtils.debug("[{}] spawning grave in world {}", player.getName(), player.getWorld().getName());
         if (disabledWorlds.contains(player.getWorld().getName())) {
             if (debug) LogUtils.debug("[{}] return: disabled world {}", player.getName(), player.getWorld().getName());
             return;

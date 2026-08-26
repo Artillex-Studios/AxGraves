@@ -3,7 +3,7 @@
 
     <groupId>com.artillexstudios</groupId>
     <artifactId>AxGraves</artifactId>
-    <version>1.29.0</version>
+    <version>1.30.0</version>
     <packaging>jar</packaging>
 
     <name>AxGraves</name>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.artillexstudios.axapi</groupId>
             <artifactId>axapi</artifactId>
-            <version>2.1.0-DEV-32</version>
+            <version>2.2.0-DEV-ITEMS-31</version>
             <scope>compile</scope>
             <classifier>all</classifier>
         </dependency>

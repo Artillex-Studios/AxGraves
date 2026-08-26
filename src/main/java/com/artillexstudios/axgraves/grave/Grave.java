@@ -233,7 +233,7 @@ public class Grave {
             meta.billboardConstrain(DisplayMeta.BillboardConstrain.valueOf(section.getString("billboard").toUpperCase()));
         });
 
-        page.setContent(String.join("<reset><br>", lines));
+        page.setContent(String.join("&r<br>", lines));
         page.spawn();
     }
 
