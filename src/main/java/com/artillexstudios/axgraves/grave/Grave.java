@@ -55,12 +55,12 @@ public class Grave {
     private final OfflinePlayer player;
     private final String playerName;
     private final Inventory gui;
-    private int storedXP;
+    private long storedXP;
     private final PacketEntity entity;
     private Hologram hologram;
     private boolean removed = false;
 
-    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, int storedXP, long date) {
+    public Grave(Location loc, @NotNull OfflinePlayer offlinePlayer, @NotNull List<ItemStack> items, long storedXP, long date) {
         items = new ArrayList<>(items);
         items.removeIf(it -> {
             if (it == null) return true;
@@ -280,7 +280,7 @@ public class Grave {
 
         if (storedXP == 0) return;
         final ExperienceOrb exp = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
-        exp.setExperience(storedXP);
+        exp.setExperience((int) Math.min(storedXP, Integer.MAX_VALUE));
     }
 
     public void closeInventory(@Nullable HumanEntity closeFor) {
@@ -312,7 +312,7 @@ public class Grave {
         return gui;
     }
 
-    public int getStoredXP() {
+    public long getStoredXP() {
         return storedXP;
     }
 

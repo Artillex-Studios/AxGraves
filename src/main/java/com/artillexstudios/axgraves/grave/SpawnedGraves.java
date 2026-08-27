@@ -97,7 +97,7 @@ public class SpawnedGraves {
                 OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(obj.get("owner").getAsString()));
                 String itStr = obj.get("items").getAsString();
                 ItemStack[] items = Serializers.ITEM_ARRAY.deserialize(Base64.getDecoder().decode(itStr));
-                int xp = obj.get("xp").getAsInt();
+                long xp = obj.get("xp").getAsLong();
                 long date = obj.get("date").getAsLong();
                 addGrave(new Grave(location, owner, Arrays.asList(items), xp, date));
             }
