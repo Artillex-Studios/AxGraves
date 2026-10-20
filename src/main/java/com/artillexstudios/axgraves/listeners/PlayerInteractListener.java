@@ -23,10 +23,8 @@ public class PlayerInteractListener implements Listener {
         };
         if (hand == null) return;
 
-        for (Grave grave : SpawnedGraves.getGraves()) {
-            if (!grave.getLocation().getBlock().equals(event.getClickedBlock())) continue;
-            grave.interact(event.getPlayer(), hand);
-            return;
-        }
+        Grave grave = SpawnedGraves.getGraveAt(event.getClickedBlock());
+        if (grave == null) return;
+        grave.interact(event.getPlayer(), hand);
     }
 }
