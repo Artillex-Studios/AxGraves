@@ -1,6 +1,8 @@
 package com.artillexstudios.axgraves.utils;
 
 import com.artillexstudios.axapi.libs.boostedyaml.block.implementation.Section;
+import com.artillexstudios.axapi.utils.logging.LogUtils;
+import com.artillexstudios.axgraves.AxGraves;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -22,12 +24,20 @@ public class LocationUtils {
     }
 
     public static void clampLocation(Location location) {
-        Section section = CONFIG.getSection("spawn-height-limits." + location.getWorld().getName());
+        World world = location.getWorld();
+        boolean debug = AxGraves.isDebugMode();
+        Section section = CONFIG.getSection("spawn-height-limits." + world.getName());
         double min, max;
         if (section != null) {
+            if (debug) {
+                LogUtils.debug("clamping location - reading from config for world '{}'", world.getName());
+            }
             min = section.getDouble("min");
             max = section.getDouble("max");
         } else {
+            if (debug) {
+                LogUtils.debug("clamping location - not in config, using default for world '{}' (env: {})", world.getName(), world.getEnvironment().name());
+            }
             switch (location.getWorld().getEnvironment()) {
                 case NETHER, THE_END -> {
                     min = 0;
@@ -39,7 +49,11 @@ public class LocationUtils {
                 }
             }
         }
-        location.setY(Math.clamp(location.getY(), min, max));
+        double clampedY = Math.clamp(location.getY(), min, max);
+        if (debug) {
+            LogUtils.debug("clamping location - value: {} min: {} max: {} result: {}", location.getY(), min, max, clampedY);
+        }
+        location.setY(clampedY);
     }
 
     @NotNull
